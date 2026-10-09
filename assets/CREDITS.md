@@ -36,3 +36,7 @@
 - Quaternius Ultimate Spaceships Pack：来自 https://github.com/Malcolmnixon/Quaternius-Ultimate-Spaceships-Pack 的 .blend 文件，用 Blender 转成 .glb。
 
 原始授权均为 CC0，与官网版本相同。
+
+## 游戏内素材包（`web/`）
+
+`web/` 是上面这些素材的缩小版，供网页游戏加载：模型贴图缩到 256 像素（建筑和运输机 512 像素）并去重，再转成 `.gltf`（几何体内嵌）加单独的 `.webp` 贴图，方便任何静态网站托管；地面贴图缩到 1024 像素。来源和授权与原文件相同，由 `tools/build_web_assets.sh` 生成。

@@ -7,18 +7,21 @@
 | 版本 | 状态 | 内容 |
 | --- | --- | --- |
 | v0.4 | 已完成 | 3 关、1440 宽战场、战术终端风格界面、星级与本地存档、教学提示 |
-| v0.5 | 制作中 | 军械库、兵营与孵化池、新兵种、中线据点与野怪营地、新酸液弹、加血框、金手指 |
-| v0.7 | 素材已就绪 | 写实风格模型、贴图、音效、音乐已在 `assets/`，待接入游戏 |
+| v0.5 | 进行中 | 已完成：高清模型、PBR 地面、采样音效和音乐接入游戏，单位 AI 重写，帧率优化（画质设置、动态分辨率、帧率显示）。待做：军械库、兵营与孵化池、新兵种、中线据点与野怪营地、新酸液弹、加血框、金手指 |
 
 ## 运行
 
-用 Chrome 或 Edge 直接打开 `zongxian_demo.html`。需要联网（three.js 和字体从 CDN 加载）。
-
-本地起一个静态服务器也可以：
+高清素材要通过网址加载，所以要在仓库目录起一个本地静态服务器，再用 Chrome 或 Edge 打开：
 
 ```bash
-npx serve .
+npx serve .            # 然后打开 http://localhost:3000/zongxian_demo.html
+# 或者
+python -m http.server  # 然后打开 http://localhost:8000/zongxian_demo.html
 ```
+
+需要联网（three.js 和字体从 CDN 加载）。直接双击打开 HTML 也能玩，但浏览器不允许本地文件读取素材，会退回到简单几何体和合成音效。
+
+画质在「设置」里调：高、中、低。帧率不够时游戏会自动降低渲染分辨率；打开「显示帧率」可以看到当前帧率和分辨率。
 
 ## 操作
 
@@ -34,12 +37,14 @@ npx serve .
 ## 目录
 
 ```
-zongxian_demo.html     当前 Demo（单文件）
+zongxian_demo.html     当前 Demo（游戏代码都在这一个文件里）
 docs/设计文档.md        完整设计文档，所有需求和数值以它为准
 docs/zongxian_map.png  战场布局缩略图
 docs/素材清单.md        正式版需要的模型、贴图、音效、音乐清单与规格
 assets/                正式素材：模型、贴图、音效、音乐（来源见 assets/CREDITS.md）
+assets/web/            游戏实际加载的素材包：模型贴图缩到 256/512 像素、地面贴图 1024 像素
 tools/assetgen/        生成自制模型、音效、音乐的脚本（Blender bpy + Python）
+tools/build_web_assets.sh  从 assets/ 重新生成 assets/web/
 ```
 
 ## 用 Claude Code 继续开发
@@ -56,4 +61,10 @@ python tools/assetgen/bugs2.py -- out/       # 其余虫族和中立野怪
 python tools/assetgen/structures.py -- out/  # 建筑和岩石
 python tools/assetgen/sfx.py out/sfx         # 音效（需要 ffmpeg）
 python tools/assetgen/music.py out/music     # 音乐（需要 ffmpeg）
+```
+
+改了 `assets/models` 或 `assets/textures` 之后，重新生成游戏用的素材包：
+
+```bash
+sh tools/build_web_assets.sh   # 需要 Node.js 和 Python（Pillow）
 ```
