@@ -119,6 +119,36 @@ details[open] summary::before{content:'–'}
 .tg.q .seg button{padding:6px 4px;font-size:13px}
 #btnPlay[disabled]{opacity:.6;cursor:progress}
 
+/* barracks panel: rises above the upgrade bar while the player stands on a barracks pad */
+#rax{position:absolute;left:6px;right:calc(88px * var(--u));bottom:70px;background:rgba(10,14,10,.93);
+  box-shadow:inset 0 2px 0 var(--steel);clip-path:var(--cut-s);padding:8px 8px 8px;font-size:clamp(11px,calc(12px * var(--u)),14px)}
+#rax .rx-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:0 2px 6px}
+#rax .rx-head b{font-size:1.15em;color:var(--steel)}
+#rax .rx-head span{color:var(--muted);font-size:.9em}
+#rax .rx-row{display:flex;gap:4px;margin-top:4px}
+.rb{flex:1;min-width:0;border:0;background:rgba(30,38,30,.96);color:var(--ink);font-family:var(--cjk);font-size:1em;font-weight:700;
+  padding:7px 2px;cursor:pointer;line-height:1.2;clip-path:var(--cut-s)}
+.rb small{display:block;font-weight:600;font-size:.78em;color:var(--amber);font-family:var(--num)}
+.rb.on{background:var(--steel);color:#0e120e}
+.rb.on small{color:#0e120e}
+.rb[disabled]{opacity:.38;cursor:default}
+
+/* cheat panel: slides in from the right, game keeps running */
+#cheat{position:absolute;top:66px;right:0;bottom:66px;width:min(300px,78%);background:rgba(8,11,8,.9);
+  box-shadow:inset 2px 0 0 var(--amber);overflow:auto;padding:10px 10px 14px;font-size:13px;transform:translateX(105%);transition:transform .2s;z-index:6}
+#cheat.open{transform:none}
+#cheat h3{margin:12px 0 6px;font-size:12px;letter-spacing:.12em;color:var(--amber)}
+#cheat h3:first-of-type{margin-top:0}
+#cheat .ttl{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:800;font-size:15px}
+#cheat .ttl button{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 6px}
+#cheat .seg{margin:0 0 5px;flex-wrap:wrap}
+#cheat .seg button{padding:5px 4px;font-size:12px;flex:1 0 auto}
+#cheat .go{width:100%;border:0;background:var(--amber);color:#14100a;font-weight:800;font-family:var(--cjk);padding:7px;cursor:pointer;margin-bottom:2px}
+#cheat .grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#cheat .grid button{border:0;background:rgba(40,46,40,.95);color:var(--ink);font-family:var(--cjk);font-size:12px;font-weight:700;padding:7px 4px;cursor:pointer}
+#cheat .grid button.on{background:var(--amber);color:#14100a}
+#cheat .note{color:var(--muted);font-size:11px;margin-top:10px;line-height:1.5}
+
 
 /* result */
 .win{box-shadow:inset 0 3px 0 var(--acid)} .win h1{color:var(--acid)}
@@ -141,10 +171,41 @@ details[open] summary::before{content:'–'}
       <button class="ub" data-i="0"><i>1</i><b>火力</b><em></em><span>60</span></button>
       <button class="ub" data-i="1"><i>2</i><b>射速</b><em></em><span>60</span></button>
       <button class="ub" data-i="2"><i>3</i><b>护甲</b><em></em><span>70</span></button>
-      <button class="ub" data-i="3"><i>4</i><b>援军</b><em></em><span>120</span></button>
       <button class="ub" id="rep"><i>E</i><b>维修</b><em>&nbsp;</em><span>按住</span></button>
     </div>
 
+    <div id="rax" class="hidden">
+      <div class="rx-head"><b id="raxName">左兵营</b><span id="raxInfo"></span></div>
+      <div class="rx-row" id="raxUnits"></div>
+      <div class="rx-row"><button class="rb" id="raxUp"></button><button class="rb" id="raxTrain"></button><button class="rb" id="raxRebuild"></button></div>
+    </div>
+    <div id="cheat" aria-hidden="true">
+      <div class="ttl"><span>金手指</span><button id="chClose" aria-label="关闭">✕</button></div>
+      <h3>资源</h3>
+      <div class="grid"><button data-c="money" data-v="100">+100</button><button data-c="money" data-v="1000">+1000</button><button data-c="inf" class="tgl" style="grid-column:span 2">无限资源</button></div>
+      <h3>友军</h3>
+      <div class="seg" data-g="hk"><button data-v="marine">机枪兵</button><button data-v="flamer">火焰兵</button><button data-v="rocketeer">火箭兵</button><button data-v="medic">医疗兵</button><button data-v="mech">步行机甲</button></div>
+      <div class="seg" data-g="hn"><button data-v="1">1</button><button data-v="5">5</button><button data-v="10">10</button></div>
+      <div class="seg" data-g="hp"><button data-v="base">基地</button><button data-v="me">主角身边</button><button data-v="aim">准星处</button></div>
+      <button class="go" data-c="spawnH">生成友军</button>
+      <h3>虫族</h3>
+      <div class="seg" data-g="bk"><button data-v="beetle">甲虫</button><button data-v="spitter">喷吐虫</button><button data-v="brute">重甲虫</button><button data-v="bomber">自爆虫</button><button data-v="flyer">飞虫</button><button data-v="mortar">迫击虫</button><button data-v="lancer">刺镰虫</button><button data-v="queen">虫后</button></div>
+      <div class="seg" data-g="bn"><button data-v="1">1</button><button data-v="5">5</button><button data-v="10">10</button></div>
+      <div class="seg" data-g="bp"><button data-v="nest">虫巢</button><button data-v="front">主角前方</button><button data-v="aim">准星处</button></div>
+      <button class="go" data-c="spawnB">生成虫族</button>
+      <h3>中立野怪</h3>
+      <div class="seg" data-g="nk"><button data-v="burrower">掘地虫群</button><button data-v="behemoth">沙原巨兽</button></div>
+      <div class="seg" data-g="np"><button data-v="mid">地图正中</button><button data-v="aim">准星处</button></div>
+      <button class="go" data-c="spawnN">生成野怪</button>
+      <h3>辅助</h3>
+      <div class="seg" data-g="spd"><button data-v="1">1× 速度</button><button data-v="2">2×</button><button data-v="4">4×</button></div>
+      <div class="grid">
+        <button data-c="god" class="tgl">主角无敌</button><button data-c="queen">召唤虫后</button>
+        <button data-c="btowers">拆光防御塔</button><button data-c="repair">修满己方建筑</button>
+        <button data-c="clear">清除全部虫族</button><button data-c="win">直接胜利</button>
+      </div>
+      <p class="note">按 ` 键（数字 1 左边）开关面板。用过金手指的这一局不记星级和最佳用时。</p>
+    </div>
     <div id="skills" class="sk-wrap hidden">
       <button class="sk" id="skNade"><span>手雷</span><small>Q</small></button>
       <button class="sk" id="skDash"><span>翻滚</span><small>空格</small></button>
@@ -163,7 +224,9 @@ details[open] summary::before{content:'–'}
             <dt>空格</dt><dd>翻滚，翻滚中子弹会穿过你</dd>
             <dt>Q / 右键</dt><dd>手雷，能炸掉范围内的酸液弹</dd>
             <dt>按住 E</dt><dd>靠近己方炮塔或基地时维修</dd>
-            <dt>1 – 4</dt><dd>花资源升级</dd>
+            <dt>1 – 3</dt><dd>花资源升级火力、射速、护甲</dd>
+            <dt>兵营黄框</dt><dd>站进去：1 – 5 选兵种，U 升级兵营，T 部队训练，R 重建</dd>
+            <dt>`</dt><dd>金手指面板（先在设置里打开）</dd>
             <dt>P / Esc</dt><dd>暂停</dd>
             <dt>手机</dt><dd>左半屏拖动移动，自动瞄准射击，右下角放技能</dd>
           </dl>
@@ -192,6 +255,7 @@ details[open] summary::before{content:'–'}
         <h2>设置</h2>
         <div class="tg q"><span>画质<small>帧率不够时会自动降低分辨率</small></span><div class="seg" id="qSeg" role="radiogroup" aria-label="画质"><button data-q="high" role="radio">高</button><button data-q="mid" role="radio">中</button><button data-q="low" role="radio">低</button></div></div>
         <label class="tg"><span>显示帧率</span><input type="checkbox" id="optFps"></label>
+        <label class="tg"><span>允许金手指<small>按 ` 键或在暂停菜单里打开</small></span><input type="checkbox" id="optCheats"></label>
         <label class="tg"><span>屏幕震动</span><input type="checkbox" id="optShake"></label>
         <label class="tg"><span>音效</span><input type="checkbox" id="optSound"></label>
         <label class="tg" style="margin-bottom:18px"><span>音乐</span><input type="checkbox" id="optMusic"></label>
@@ -208,6 +272,7 @@ details[open] summary::before{content:'–'}
         <p class="sub">按 P 或 Esc 继续</p>
         <div class="col">
           <button class="btn" id="resume">继续战斗</button>
+          <button class="btn alt hidden" id="pauseCheat">金手指</button>
           <button class="btn alt" id="restart">重新开始</button>
           <button class="btn alt" id="quit">返回选关</button>
         </div>
@@ -274,6 +339,8 @@ function placeUi(){
   shopH = (shopEl.offsetHeight || 50) / cssScale;
   const sk = document.getElementById('skills');
   if (sk) sk.style.bottom = ((shopEl.offsetHeight || 50) + 10) + 'px';
+  const rx = document.getElementById('rax');
+  if (rx) rx.style.bottom = ((shopEl.offsetHeight || 50) + 6) + 'px';
 }
 addEventListener('resize', resize);
 
@@ -358,6 +425,7 @@ function buildTerrain(theme){
     tg.save(); tg.translate(CX, 2700); tg.rotate(k * Math.PI / 2);
     tg.beginPath(); tg.moveTo(0, -22); tg.lineTo(6, -14); tg.lineTo(-6, -14); tg.fill(); tg.restore();
   }
+  for (const p of [{x:220, y:3075}, {x:1220, y:3075}]) drawPad(tg, p.x, p.y - 130);
   // cliffs
   for (const side of [0, 1]){
     tg.fillStyle = '#3e2c22'; tg.beginPath();
@@ -368,6 +436,13 @@ function buildTerrain(theme){
     }
     tg.lineTo(ex, WH); tg.fill();
   }
+}
+function drawPad(g, x, y){
+  g.save(); g.lineWidth = 3; g.strokeStyle = 'rgba(226,166,38,.9)'; g.setLineDash([14, 8]);
+  g.strokeRect(x - 50, y - 50, 100, 100); g.setLineDash([]);
+  g.fillStyle = 'rgba(226,166,38,.12)'; g.fillRect(x - 50, y - 50, 100, 100);
+  g.font = '700 16px "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillStyle = 'rgba(226,166,38,.85)'; g.fillText('兵营', x, y); g.restore();
 }
 function crater(x, y, rad){
   tg.fillStyle = 'rgba(45,28,16,.4)'; tg.beginPath(); tg.ellipse(x, y, rad, rad * .8, 0, 0, TAU); tg.fill();
@@ -581,7 +656,30 @@ acidCore.castShadow = true; nadeMesh.castShadow = true;
 for (let i = 0; i < SMAX; i++) slugs.setColorAt(i, WHITE);
 for (let i = 0; i < PMAX; i++) partsMesh.setColorAt(i, WHITE);
 for (const m of [acidCore, acidGlow, slugs, partsMesh, nadeMesh]){ m.frustumCulled = false; m.count = 0; scene.add(m); }
-const C_PSLUG = new THREE.Color('#ffe08a'), C_SLUG = new THREE.Color('#ffc65a');
+const C_PSLUG = new THREE.Color('#ffe08a'), C_SLUG = new THREE.Color('#ffc65a'), C_ROCK = new THREE.Color('#ff8a3a');
+// mortar landing markers and acid pools
+const warnRings = [];
+for (let i = 0; i < 10; i++){
+  const r = new THREE.Mesh(new THREE.RingGeometry(30, 36, 40), new THREE.MeshBasicMaterial({color: 0x9dff5c, transparent: true, opacity: .6, depthWrite: false}));
+  r.rotation.x = -Math.PI / 2; r.visible = false; scene.add(r); warnRings.push(r);
+}
+const poolTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d'), r = mulberry(9);
+  for (let i = 0; i < 16; i++){
+    const a = r() * TAU, d = r() * 26, x = 64 + Math.cos(a) * d, y = 64 + Math.sin(a) * d, rad = 14 + r() * 26;
+    const gr = g.createRadialGradient(x, y, 0, x, y, rad);
+    gr.addColorStop(0, 'rgba(170,255,90,.85)'); gr.addColorStop(.6, 'rgba(110,200,50,.5)'); gr.addColorStop(1, 'rgba(90,170,40,0)');
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, rad, 0, TAU); g.fill();
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const poolMeshes = [];
+for (let i = 0; i < 24; i++){
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2),
+    new THREE.MeshBasicMaterial({map: poolTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending}));
+  m.visible = false; m.renderOrder = 2; scene.add(m); poolMeshes.push(m);
+}
 const rings = [];
 for (let i = 0; i < 8; i++){
   const r = new THREE.Mesh(new THREE.RingGeometry(66, 70, 48), new THREE.MeshBasicMaterial({color: 0xffbf5c, transparent: true, opacity: .55, depthWrite: false}));
@@ -670,7 +768,20 @@ function buildNest(){
   shield.position.y = 35; g.add(shield);
   Object.assign(g.userData, {dome, core, shield}); return g;
 }
-const BUILD = {base: buildBase, tower: buildTower, btower: buildBTower, nest: buildNest};
+function buildBarracks(){
+  const g = new THREE.Group();
+  g.add(mesh(BOX, lam('#5c6267'), 0, 12, 0, 150, 24, 110));
+  g.add(mesh(CYL, lam('#6c7378'), 0, 26, 0, 60, 12, 100));
+  g.add(mesh(BOX, lam('#e0a526'), 0, 2, -58, 150, 4, 6));
+  return g;
+}
+function buildHatchery(){
+  const g = new THREE.Group(), m1 = lam('#3d1a37');
+  for (let i = 0; i < 6; i++){ const a = i / 6 * TAU; g.add(mesh(SPH, m1, Math.cos(a) * 52, 6, Math.sin(a) * 52, 34, 14, 34)); }
+  for (let i = 0; i < 7; i++){ const a = i / 7 * TAU; g.add(mesh(SPH, lam('#b8ff7a', 0x3a7020), Math.cos(a) * 22, 12, Math.sin(a) * 22, 9, 12, 9)); }
+  return g;
+}
+const BUILD = {base: buildBase, tower: buildTower, btower: buildBTower, nest: buildNest, barracks: buildBarracks, hatchery: buildHatchery};
 const structMeshes = new Map();
 const FALLBACK_SCALE = {base:2.2, tower:1.5, btower:1.55, nest:2.3};
 function syncStruct(e, dt){
@@ -723,13 +834,16 @@ const shipG = (() => {
 const ASSET = 'assets/web/', ASSET_RAW = 'assets/';
 const MODEL_FILES = {
   marine:'units/marine', player:'units/player', beetle:'bugs/beetle', spitter:'bugs/spitter', brute:'bugs/brute', queen:'bugs/queen',
+  flamer:'units/flamer', rocketeer:'units/rocketeer', medic:'units/medic', mech:'units/mech',
+  bomber:'bugs/bomber', flyer:'bugs/flyer', mortar:'bugs/mortar', lancer:'bugs/lancer', burrower:'neutral/burrower', behemoth:'neutral/behemoth',
+  barracks:'structures/barracks', hatchery:'structures/hatchery',
   base:'structures/base', tower:'structures/tower', btower:'structures/bug_tower', nest:'structures/nest', ship:'ships/imperial',
   rock1:'props/rock_1', rock2:'props/rock_2', rock3:'props/rock_3', rock4:'props/rock_4', rock5:'props/rock_5', rock6:'props/rock_6',
   crate:'props/prop_crate3', barrel:'props/prop_barrel_large', computer:'props/prop_computer', lamp:'props/prop_light_floor', pipes:'props/column_pipes',
 };
 const TEX_CORE = ['sand', 'creep', 'metal_floor'], TEX_LATE = ['sand_warm', 'scorched'];
 const THEME_TEX = {sand:'sand', acid:'sand_warm', hive:'scorched'};
-const SFX_FILES = ['rifle', 'marine_shot', 'turret', 'acid_spit', 'acid_hit', 'explosion_big', 'explosion_small', 'grenade_throw', 'bug_bite', 'bug_die',
+const SFX_FILES = ['flamer_loop', 'rocket', 'behemoth_roar', 'rifle', 'marine_shot', 'turret', 'acid_spit', 'acid_hit', 'explosion_big', 'explosion_small', 'grenade_throw', 'bug_bite', 'bug_die',
   'bug_screech', 'queen_roar', 'player_hurt', 'player_die', 'dropship', 'repair_loop', 'ui_click', 'ui_buy', 'ui_denied', 'win', 'lose'];
 const GLB = {}, TEXS = {}, sfxRaw = {};
 const ASSETS = window.__ASSETS = {done:false, total:0, loaded:0, failed:[]};
@@ -951,6 +1065,16 @@ const CROWD_DEF = {
   spitter:{max:200, scale:1,    run:45,  atk:'attack'},
   brute:  {max:80,  scale:1,    run:38,  atk:'attack'},
   queen:  {max:3,   scale:.75,  run:30,  atk:'attack'},
+  flamer: {max:90,  scale:1,    run:55,  atk:'shoot'},
+  rocketeer:{max:90, scale:1,   run:52,  atk:'shoot'},
+  medic:  {max:70,  scale:1,    run:60,  atk:'shoot'},
+  mech:   {max:24,  scale:.85,  run:40,  atk:'shoot'},
+  bomber: {max:120, scale:1,    run:80,  atk:'attack'},
+  flyer:  {max:120, scale:1,    run:110, atk:'attack'},
+  mortar: {max:60,  scale:1,    run:35,  atk:'attack'},
+  lancer: {max:90,  scale:1,    run:75,  atk:'attack'},
+  burrower:{max:80, scale:1.2,  run:60,  atk:'attack'},
+  behemoth:{max:6,  scale:.85,  run:30,  atk:'attack'},
 };
 const CROWD = {};
 function animRow(e, C){
@@ -988,12 +1112,14 @@ function drawCorpses(dt, off){
 }
 
 // structures: merged static meshes + animated nodes; colliders/scale per kind
-const STRUCT_DEF = {base:{s:.85, keep:[]}, tower:{s:.8, keep:['turret_head']}, btower:{s:.75, keep:[]}, nest:{s:.7, keep:[]}};
+const STRUCT_DEF = {base:{s:.85, keep:[]}, tower:{s:.8, keep:['turret_head']}, btower:{s:.75, keep:[]}, nest:{s:.7, keep:[]},
+  barracks:{s:.8, keep:[], center:true}, hatchery:{s:.85, keep:[]}};
 const STRUCT_TPL = {};
 function buildStructModel(kind){
   const T = STRUCT_TPL[kind], d = STRUCT_DEF[kind];
   const g = new THREE.Group(), o = T.scene.clone(true);
   o.scale.setScalar(d.s); g.add(o);
+  if (d.center){ o.position.x = -T.cx * d.s; o.position.z = -T.cz * d.s; }
   if (T.clips.length){ g.userData.mixer = new THREE.AnimationMixer(o); T.clips.forEach(c => g.userData.mixer.clipAction(c).play()); }
   if (kind === 'tower') g.userData.turret = o.getObjectByName('turret_head');
   fixDepth(g);
@@ -1102,6 +1228,8 @@ function paintMarks(){
   g.font = '700 22px "Saira Condensed",sans-serif'; g.textAlign = 'center'; g.fillStyle = 'rgba(226,166,38,.75)'; g.fillText('LZ-01', CX, pad + 72);
   g.strokeStyle = 'rgba(240,240,230,.35)'; g.lineWidth = 3; g.setLineDash([22, 16]);
   for (const x of [CX - 480, CX, CX + 480]){ g.beginPath(); g.moveTo(x, py + 40); g.lineTo(x, 230); g.stroke(); }
+  g.setLineDash([]);
+  for (const p of RAX_POS){ drawPad(g, p.x, p.y - 130 - 2600); }
   marksTex = new THREE.CanvasTexture(c); marksTex.flipY = false; marksTex.colorSpace = THREE.SRGBColorSpace; marksTex.anisotropy = anisotropy;
 }
 function makeGround(){
@@ -1192,7 +1320,8 @@ function buildHD(){
   }
   for (const k in STRUCT_DEF) if (GLB[k]){
     const g = GLB[k];
-    STRUCT_TPL[k] = {scene: prepStatic(g, STRUCT_DEF[k].keep), clips: g.animations};
+    const sc = prepStatic(g, STRUCT_DEF[k].keep), bb = new THREE.Box3().setFromObject(sc);
+    STRUCT_TPL[k] = {scene: sc, clips: g.animations, cx: (bb.min.x + bb.max.x) / 2, cz: (bb.min.z + bb.max.z) / 2};
   }
   buildShip();
   buildScenery();
@@ -1215,7 +1344,7 @@ function warmup(){
   const fx = [acidCore, acidGlow, slugs, partsMesh, nadeMesh];
   fx.forEach(m => { m.count = 1; m.visible = true; tmpM.makeTranslation(CX, 5, cz); m.setMatrixAt(0, tmpM); m.instanceMatrix.needsUpdate = true; });
   const dc = decals.count; decals.count = Math.max(1, dc);
-  rings[0].visible = true; beam.visible = true;
+  rings[0].visible = true; beam.visible = true; warnRings[0].visible = true; poolMeshes[0].visible = true;
   camera.position.set(CX, (H / 2) / TANH, cz); camera.lookAt(CX, 0, cz);
   sun.target.position.set(CX, 0, cz); sun.position.copy(sun.target.position).add(SUN_DIR); sun.target.updateMatrixWorld();
   const culled = [];
@@ -1224,7 +1353,7 @@ function warmup(){
   culled.forEach(o => { o.frustumCulled = true; });
   tmp.forEach(g => scene.remove(g));
   if (shipModel) shipModel.visible = false;
-  shipG.visible = false; rings[0].visible = false; beam.visible = false;
+  shipG.visible = false; rings[0].visible = false; beam.visible = false; warnRings[0].visible = false; poolMeshes[0].visible = false;
   for (const k in CROWD){ CROWD[k].begin(); CROWD[k].end(); }
   for (const k in INST){ INST[k].begin(); INST[k].end(); }
   fx.forEach(m => { m.count = 0; m.visible = false; });
@@ -1283,6 +1412,8 @@ function render(now){
   let na = 0, ns = 0, np = 0, nn = 0;
   beam.visible = false; shipG.visible = false; if (shipModel) shipModel.visible = false;
   for (const r of rings) r.visible = false;
+  for (const r of warnRings) r.visible = false;
+  for (const m of poolMeshes) m.visible = false;
   if (G){
     const top = G.camY - 140, bot = G.camY + H + 140, lx = G.camX - 140, rx = G.camX + W + 140;
     const off = o => o.y < top || o.y > bot || o.x < lx || o.x > rx;
@@ -1304,12 +1435,29 @@ function render(now){
         ts.setScalar(8.5); tmpM.compose(tv, tq, ts); acidGlow.setMatrixAt(na, tmpM); na++;
       } else {
         if (ns >= SMAX) continue;
-        const sp = Math.hypot(b.vx, b.vy) || 1, L = b.kind === 'pslug' ? 12 : 8, th = b.kind === 'pslug' ? 2.2 : 1.7;
+        const rk = b.kind === 'rocket', sp = Math.hypot(b.vx, b.vy) || 1, L = rk ? 14 : b.kind === 'pslug' ? 12 : 8, th = rk ? 3.6 : b.kind === 'pslug' ? 2.2 : 1.7;
         tq.setFromAxisAngle(YAX, -Math.atan2(b.vy, b.vx));
         tv.set(b.x - b.vx / sp * L / 2, 11, b.y - b.vy / sp * L / 2); ts.set(L, th, th);
-        tmpM.compose(tv, tq, ts); slugs.setMatrixAt(ns, tmpM); slugs.setColorAt(ns, b.kind === 'pslug' ? C_PSLUG : C_SLUG); ns++;
+        tmpM.compose(tv, tq, ts); slugs.setMatrixAt(ns, tmpM); slugs.setColorAt(ns, rk ? C_ROCK : b.kind === 'pslug' ? C_PSLUG : C_SLUG); ns++;
       }
     }
+    // mortar shells arc over the field; their landing spot pulses on the ground
+    G.lobs.forEach((l, i) => {
+      const k = l.t / l.dur, x = l.x0 + (l.x1 - l.x0) * k, y = l.y0 + (l.y1 - l.y0) * k, h = 10 + Math.sin(k * Math.PI) * 140;
+      if (na < AMAX){
+        tq.identity(); tv.set(x, h, y);
+        ts.setScalar(9); tmpM.compose(tv, tq, ts); acidCore.setMatrixAt(na, tmpM);
+        ts.setScalar(15); tmpM.compose(tv, tq, ts); acidGlow.setMatrixAt(na, tmpM); na++;
+      }
+      const wr = warnRings[i % warnRings.length];
+      wr.visible = true; wr.position.set(l.x1, .8, l.y1); wr.scale.setScalar(.75 + .25 * Math.sin(t * 14)); wr.material.opacity = .45 + .4 * k;
+    });
+    G.pools.forEach((p, i) => {
+      if (i >= poolMeshes.length) return;
+      const m = poolMeshes[i], r = 40 * (.55 + .45 * p.t / p.max);
+      m.visible = true; m.position.set(p.x, .6, p.y); m.scale.set(r * 2.3, 1, r * 2.3); m.rotation.y = t * .3 + i;
+      m.material.opacity = Math.min(.85, p.t / .6);
+    });
     tq.identity();
     for (const p of G.parts){
       if (np >= PMAX) break;
@@ -1374,13 +1522,25 @@ buildTerrain(); setupWorld(); resize();
 
 /* ---------- definitions ---------- */
 const DEF = {
-  player:  {team:0, r:11, hp:150, spd:168},
+  player:  {team:0, r:11, hp:150, spd:168, aa:true},
   marine:  {team:0, r:9,  hp:50,  spd:48, range:165, dmg:7,  cd:.6,  aggro:240},
+  flamer:  {team:0, r:10, hp:90,  spd:44, range:90,  dmg:3,  cd:.1,  aggro:220, flame:true},
+  rocketeer:{team:0, r:9, hp:45,  spd:42, range:260, dmg:60, cd:2.2, aggro:300, rocket:true, aa:true},
+  medic:   {team:0, r:9,  hp:60,  spd:48, range:120, dmg:0,  cd:.5,  aggro:0,   medic:true},
+  mech:    {team:0, r:20, hp:600, spd:30, range:200, dmg:18, cd:.4,  aggro:260, twin:true},
+  bomber:  {team:1, r:10, hp:30,  spd:85, range:0,   dmg:45, cd:1,   aggro:260, bounty:10, melee:true, bomber:true},
+  flyer:   {team:1, r:10, hp:35,  spd:110,range:0,   dmg:8,  cd:1,   aggro:200, bounty:10, melee:true, air:true},
+  mortar:  {team:1, r:15, hp:90,  spd:30, range:420, dmg:14, cd:4.5, aggro:440, bounty:20, lob:true},
+  lancer:  {team:1, r:14, hp:120, spd:75, range:0,   dmg:22, cd:1.4, aggro:260, bounty:18, melee:true, sweep:true},
+  burrower:{team:2, r:8,  hp:40,  spd:60, range:0,   dmg:6,  cd:.8,  aggro:200, bounty:6,  melee:true},
+  behemoth:{team:2, r:28, hp:900, spd:30, range:0,   dmg:40, cd:1.5, aggro:220, bounty:200, melee:true, quake:true},
   beetle:  {team:1, r:11, hp:55,  spd:70, range:0,   dmg:9,  cd:.7,  aggro:260, bounty:8, melee:true},
   brute:   {team:1, r:17, hp:260, spd:34, range:0,   dmg:30, cd:1.2, aggro:700, bounty:30, melee:true, siege:true},
   queen:   {team:1, r:26, hp:1600,spd:26, range:230, dmg:7,  cd:2.3, aggro:330, bounty:300},
   spitter: {team:1, r:12, hp:45,  spd:40, range:205, dmg:6,  cd:2.5, aggro:290, bounty:12},
-  tower:   {team:0, r:30, hp:700, range:235, dmg:10, cd:.38, structure:true},
+  tower:   {team:0, r:30, hp:700, range:235, dmg:10, cd:.38, structure:true, aa:true},
+  barracks:{team:0, r:80, hw:80, hh:64, hp:1500, structure:true},
+  hatchery:{team:1, r:86, hp:1200, structure:true, bounty:250},
   btower:  {team:1, r:34, hp:900, range:250, dmg:6,  cd:2.1, structure:true, bounty:150},
   base:    {team:0, r:150, hw:150, hh:82, hp:3000, structure:true},   // bigger footprint = more biters at once, so more HP
   nest:    {team:1, r:130, hw:130, hh:100, hp:2600, structure:true},
@@ -1400,7 +1560,6 @@ const UPG = [
   {id:'dmg',   name:'火力', base:60,  step:50,  max:6},
   {id:'rate',  name:'射速', base:60,  step:50,  max:6},
   {id:'armor', name:'护甲', base:70,  step:60,  max:6},
-  {id:'troops',name:'援军', base:120, step:100, max:5},
 ];
 
 let G = null;
@@ -1421,12 +1580,83 @@ function newGame(li, dk){
   setupWorld(LEVELS[li].theme);
   G = {diff:levelCfg(li, dk), diffKey:dk, level:li, levelName:LEVELS[li].name, tips:LEVELS[li].tutorial ? new Set() : null, ents:[], structs:[], idc:0, bullets:[], parts:[], toasts:[], nades:[], queen:null, queenDone:false, t:0, money:120, kills:0,
     lv:{dmg:0, rate:0, armor:0, troops:0}, theme:LEVELS[li].theme, state:'intro', camY:WH - H, camX:CX - W / 2, shake:0, humanT:2, bugT:3,
-    ship:null, player:null, respawnT:0, over:false, overT:0, endShown:false, paused:false, beam:null, baseWarn:-99};
+    ship:null, player:null, respawnT:0, over:false, overT:0, endShown:false, paused:false, beam:null, baseWarn:-99,
+    lobs:[], pools:[], buff:[0, 0, 0], speed:1, cheated:false, god:false, infMoney:false, nestSkip:false, rax:[], hatch:[], raxPad:-1};
   make('base', CX, 3085); make('tower', CX - 480, 2845); make('tower', CX, 2845); make('tower', CX + 480, 2845);
   make('nest', CX, 140); make('btower', CX - 480, 360); make('btower', CX, 360); make('btower', CX + 480, 360);
+  // two barracks flank the base, each with an interaction pad in front; two hatcheries flank the nest
+  RAX_POS.forEach((p, i) => {
+    const r = {i, x:p.x, y:p.y, padX:p.x, padY:p.y - 130, name:i ? '右兵营' : '左兵营', unit:'marine', lvl:1, t:2 + i * .5, batch:0, ent:null};
+    G.rax.push(r); raxBuild(r);
+  });
+  G.hatch = [make('hatchery', 300, 220), make('hatchery', 1140, 220)];
   for (const e of G.ents){ if (e.kind === 'btower') e.maxhp = e.hp = LEVELS[li].btowerHp; if (e.kind === 'nest') e.maxhp = e.hp = LEVELS[li].nestHp; }
   callShip(true);
   G.camY = clamp(G.ship.y - H / 2, 0, WH - H);
+}
+const RAX_POS = [{x:220, y:3075}, {x:1220, y:3075}];
+const RAX_HP = [0, 1500, 2000, 2500];
+const RAX_UNITS = [
+  {k:'marine', name:'机枪兵', lvl:1, n:3}, {k:'flamer', name:'火焰兵', lvl:2, n:1}, {k:'rocketeer', name:'火箭兵', lvl:2, n:1},
+  {k:'medic', name:'医疗兵', lvl:3, n:1}, {k:'mech', name:'步行机甲', lvl:3, n:1},
+];
+function raxBuild(r){
+  const e = make('barracks', r.x, r.y);
+  e.maxhp = e.hp = RAX_HP[r.lvl]; e.rax = r; r.ent = e;
+}
+const raxInterval = r => [0, 8, 7, 6][r.lvl] + (G.diffKey === 'hard' ? 1.5 : 0);
+// every spawn goes through here: barracks, hatcheries, nest, cheats
+function spawnUnit(kind, x, y){
+  const e = make(kind, x, y);
+  if (e.team === 0 && kind !== 'player'){
+    const m = 1 + .2 * G.lv.troops;
+    e.maxhp = e.hp = e.hp * m; e.mult = m; e.laneX = pickLane();
+  } else if (e.team === 1){
+    const lvl = Math.floor(G.t / G.diff.grow);
+    e.maxhp = e.hp = e.hp * G.diff.bugHp * (1 + lvl * .06); e.laneX = pickLane();
+  } else if (e.team === 2){ e.hx = x; e.hy = y; }
+  return e;
+}
+function raxSpawn(r){
+  r.batch++;
+  const u = RAX_UNITS.find(q => q.k === r.unit) || RAX_UNITS[0];
+  let n = u.n + r.lvl - 1;
+  if (u.k === 'mech') n = r.batch % 3 === 1 ? 1 : 0;
+  for (let i = 0; i < n; i++) spawnUnit(u.k, r.x + rnd(-55, 55), r.y - 78 + rnd(-6, 6));
+}
+function bugWave(){
+  const lvl = Math.floor(G.t / G.diff.grow), n = Math.min(15, 5 + lvl), li = G.level;
+  const live = G.hatch.filter(h => !h.dead);
+  if (!live.length){
+    // both hatcheries gone: the nest spawns by itself at half rate
+    G.nestSkip = !G.nestSkip; if (G.nestSkip) return;
+    const sp = Math.max(1, Math.round(n * .4));
+    for (let i = 0; i < n; i++) spawnUnit(i < sp ? 'spitter' : 'beetle', CX + rnd(-110, 110), 262 + rnd(0, 14));
+    return;
+  }
+  const per = Math.ceil(n / 2);
+  // special bugs take the place of regular ones (mortar / lancer count as two), so waves keep their weight
+  for (const h of live){
+    const left = h.x < CX, X = () => h.x + rnd(-60, 60), Y = () => h.y + 96 + rnd(0, 16);
+    let room = per;
+    const put = (k, cost) => { if (room >= cost){ spawnUnit(k, X(), Y()); room -= cost; return true; } return false; };
+    if (li >= 1 && R() < .25 + lvl * .03 && put('flyer', 1) && !G.flyerSeen){ G.flyerSeen = true; toast('飞虫来了：只有你、火箭兵和炮塔打得到'); }
+    if (left){
+      // left hatchery: ranged (60% spitters), mortars from level 3
+      if (li >= 2 && R() < .35 + lvl * .06) put('mortar', 2);
+      const sp = Math.round(room * .6);
+      for (let i = 0; i < room; i++) spawnUnit(i < sp ? 'spitter' : 'beetle', X(), Y());
+    } else {
+      // right hatchery: melee beetles, brutes, bombers from level 2, lancers from level 3
+      if (li >= 2 && R() < .35 + lvl * .06) put('lancer', 2);
+      if (li >= 1) for (let k = 0, nb = 1 + (lvl >= 3 ? 1 : 0); k < nb; k++) put('bomber', 1);
+      for (let i = 0; i < room; i++) spawnUnit('beetle', X(), Y());
+      if (G.diff.bruteFrom != null && lvl >= G.diff.bruteFrom && R() < .45 + lvl * .1){
+        spawnUnit('brute', X(), Y());
+        if (!G.bruteSeen){ G.bruteSeen = true; toast('重甲虫出现，它会直扑炮塔'); sfx('screech'); }
+      }
+    }
+  }
 }
 function callShip(first){
   sfx('ship');
@@ -1443,7 +1673,14 @@ addEventListener('keydown', e => {
   keys[e.code] = true;
   if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault();
   if (!G || G.over) return;
-  if (e.code >= 'Digit1' && e.code <= 'Digit4') buy(+e.code.slice(5) - 1);
+  if (e.code === 'Backquote' && SET.cheats){ toggleCheat(); return; }
+  if (G.raxPad >= 0){
+    const r = G.rax[G.raxPad];
+    if (e.code >= 'Digit1' && e.code <= 'Digit5'){ raxSelect(r, RAX_UNITS[+e.code.slice(5) - 1].k); return; }
+    if (e.code === 'KeyU') raxUpgrade(r);
+    if (e.code === 'KeyT') raxTrain();
+    if (e.code === 'KeyR') raxRebuild(r);
+  } else if (e.code >= 'Digit1' && e.code <= 'Digit3') buy(+e.code.slice(5) - 1);
   if (e.code === 'KeyP' || e.code === 'Escape') setPause(!G.paused);
   if (e.code === 'Space') dash();
   if (e.code === 'KeyQ') grenade();
@@ -1510,8 +1747,8 @@ function grenade(){
 function explodeNade(x, y){
   const dmg = 85 * (1 + .25 * G.lv.dmg);
   for (const e of G.ents){
-    if (e.team !== 1 || e.dead || e.invuln) continue;
-    if (gapTo(e, x, y) < 70) damage(e, e.structure ? dmg * .6 : dmg);
+    if (e.team === 0 || e.dead || e.invuln) continue;
+    if (gapTo(e, x, y) < 70) damage(e, e.structure ? dmg * .6 : dmg, 0);
   }
   for (const b of G.bullets) if (b.team === 1 && Math.hypot(b.x - x, b.y - y) < 75){ b.dead = true; burst(b.x, b.y, '#bfffa0', 1, 40, .2, 2); }
   scorch(x, y, 38); flashLight(x, y, 2.2);
@@ -1545,6 +1782,7 @@ function refreshShop(force){
   shopTick -= 1;
   if (shopTick > 0 && !force) return;
   shopTick = 8;
+  if (G.raxPad >= 0) refreshRax();
   ubs.forEach((b, i) => {
     const u = UPG[i], l = G.lv[u.id];
     const maxed = l >= u.max, c = u.base + u.step * l;
@@ -1552,6 +1790,132 @@ function refreshShop(force){
     b.querySelector('span').textContent = maxed ? '满级' : c;
     b.disabled = maxed || G.money < c;
   });
+}
+
+/* ---------- barracks panel ---------- */
+const raxEl = document.getElementById('rax'), raxUnitsEl = document.getElementById('raxUnits');
+const raxUpBtn = document.getElementById('raxUp'), raxTrainBtn = document.getElementById('raxTrain'), raxRebBtn = document.getElementById('raxRebuild');
+const RAX_UP_COST = [0, 300, 600];
+const raxUnitBtns = RAX_UNITS.map((u, i) => {
+  const b = document.createElement('button'); b.className = 'rb'; b.dataset.k = u.k;
+  b.addEventListener('click', () => { if (G && G.raxPad >= 0) raxSelect(G.rax[G.raxPad], u.k); b.blur(); });
+  raxUnitsEl.appendChild(b); return b;
+});
+raxUpBtn.addEventListener('click', () => { if (G && G.raxPad >= 0) raxUpgrade(G.rax[G.raxPad]); raxUpBtn.blur(); });
+raxTrainBtn.addEventListener('click', () => { raxTrain(); raxTrainBtn.blur(); });
+raxRebBtn.addEventListener('click', () => { if (G && G.raxPad >= 0) raxRebuild(G.rax[G.raxPad]); raxRebBtn.blur(); });
+const trainCost = () => 120 + 100 * G.lv.troops;
+function raxSelect(r, k){
+  const u = RAX_UNITS.find(q => q.k === k);
+  if (!u || !r.ent || r.ent.dead) return;
+  if (r.lvl < u.lvl){ toast(`${u.name}要兵营 ${u.lvl} 级`); sfx('deny'); return; }
+  r.unit = k; sfx('click'); toast(`${r.name}改出${u.name}，下一批生效`); refreshRax();
+}
+function raxUpgrade(r){
+  if (!r.ent || r.ent.dead || r.lvl >= 3) return;
+  const c = RAX_UP_COST[r.lvl];
+  if (G.money < c){ toast(`资源不足，还差 ${Math.ceil(c - G.money)}`); sfx('deny'); return; }
+  G.money -= c; r.lvl++;
+  const add = RAX_HP[r.lvl] - r.ent.maxhp; r.ent.maxhp += add; r.ent.hp += add;
+  r.t = Math.min(r.t, raxInterval(r));
+  sfx('up'); toast(`${r.name}升到 ${r.lvl} 级：每批多 1 人，出兵更快`); refreshRax();
+}
+function raxTrain(){
+  if (!G || G.lv.troops >= 5) return;
+  const c = trainCost();
+  if (G.money < c){ toast(`资源不足，还差 ${Math.ceil(c - G.money)}`); sfx('deny'); return; }
+  G.money -= c; G.lv.troops++;
+  sfx('up'); toast(`部队训练 Lv${G.lv.troops}：新出的兵生命和伤害 +${G.lv.troops * 20}%`); refreshRax();
+}
+function raxRebuild(r){
+  if (r.ent && !r.ent.dead) return;
+  if (G.money < 400){ toast(`资源不足，还差 ${Math.ceil(400 - G.money)}`); sfx('deny'); return; }
+  G.money -= 400; raxBuild(r); r.t = 2; sfx('up'); toast(`${r.name}已重建`); refreshRax();
+}
+function refreshRax(){
+  const open = G && !G.over && G.raxPad >= 0 && G.player;
+  raxEl.classList.toggle('hidden', !open);
+  if (!open) return;
+  const r = G.rax[G.raxPad], alive = r.ent && !r.ent.dead;
+  document.getElementById('raxName').textContent = `${r.name} · ${r.lvl} 级`;
+  const u = RAX_UNITS.find(q => q.k === r.unit);
+  document.getElementById('raxInfo').textContent = alive
+    ? `生命 ${Math.ceil(r.ent.hp)}/${r.ent.maxhp} · 每 ${raxInterval(r)} 秒出${u.k === 'mech' ? '（每 3 批 1 台）' : ` ${u.n + r.lvl - 1} 名`}${u.name}`
+    : '已被摧毁，不再出兵';
+  raxUnitBtns.forEach((b, i) => {
+    const q = RAX_UNITS[i], lock = r.lvl < q.lvl;
+    b.innerHTML = `${q.name}<small>${lock ? q.lvl + ' 级解锁' : (touchMode ? '' : i + 1)}</small>`;
+    b.classList.toggle('on', r.unit === q.k); b.disabled = !alive || lock;
+  });
+  raxUpBtn.innerHTML = r.lvl >= 3 ? '兵营已满级<small>&nbsp;</small>' : `升到 ${r.lvl + 1} 级<small>${RAX_UP_COST[r.lvl]}${touchMode ? '' : ' · U'}</small>`;
+  raxUpBtn.disabled = !alive || r.lvl >= 3 || G.money < RAX_UP_COST[r.lvl];
+  raxTrainBtn.innerHTML = G.lv.troops >= 5 ? '训练已满级<small>&nbsp;</small>' : `部队训练 Lv${G.lv.troops + 1}<small>${trainCost()}${touchMode ? '' : ' · T'}</small>`;
+  raxTrainBtn.disabled = G.lv.troops >= 5 || G.money < trainCost();
+  raxRebBtn.classList.toggle('hidden', alive);
+  raxRebBtn.innerHTML = `重建兵营<small>400${touchMode ? '' : ' · R'}</small>`; raxRebBtn.disabled = G.money < 400;
+}
+
+/* ---------- cheats: every button goes through cheat(cmd, arg) ---------- */
+const cheatEl = document.getElementById('cheat');
+const CH = {hk:'marine', hn:'5', hp:'me', bk:'beetle', bn:'5', bp:'front', nk:'behemoth', np:'mid', spd:'1'};
+cheatEl.querySelectorAll('.seg').forEach(sg => {
+  const g = sg.dataset.g, bs = [...sg.querySelectorAll('button')];
+  const show = () => bs.forEach(b => b.classList.toggle('on', b.dataset.v === CH[g]));
+  bs.forEach(b => b.addEventListener('click', () => { CH[g] = b.dataset.v; show(); if (g === 'spd') cheat('speed', +b.dataset.v); b.blur(); }));
+  show();
+});
+cheatEl.querySelectorAll('[data-c]').forEach(b => b.addEventListener('click', () => { cheat(b.dataset.c, b.dataset.v); b.blur(); }));
+document.getElementById('chClose').addEventListener('click', () => toggleCheat(false));
+function toggleCheat(on){
+  const open = on == null ? !cheatEl.classList.contains('open') : on;
+  cheatEl.classList.toggle('open', open && !!G); cheatEl.setAttribute('aria-hidden', String(!open));
+}
+function cheatPos(where){
+  const p = G.player, aim = !touchMode && mouse.active ? mouseWorld() : null;
+  if (where === 'aim') return aim || (p ? {x:p.x, y:p.y - 120} : {x:CX, y:G.camY + H / 2});
+  if (where === 'me') return p ? {x:p.x, y:p.y - 40} : {x:CX, y:2700};
+  if (where === 'front') return p ? {x:p.x + Math.cos(p.ang) * 300, y:p.y + Math.sin(p.ang) * 300} : {x:CX, y:G.camY + 100};
+  if (where === 'base') return {x:CX, y:2960};
+  if (where === 'nest') return {x:CX, y:270};
+  return {x:CX, y:1600};
+}
+function cheat(cmd, arg){
+  if (!G || G.over) return;
+  G.cheated = true;
+  const units = () => { let n = 0; for (const e of G.ents) if (!e.structure) n++; return n; };
+  const spawnAt = (kind, count, at, spread) => {
+    if (units() + count > 400){ toast('全图单位已到 400 上限，刷不出来了'); sfx('deny'); return 0; }
+    for (let i = 0; i < count; i++){
+      const x = clamp(at.x + rnd(-spread, spread), 30, WW - 30), y = clamp(at.y + rnd(-spread, spread), 40, WH - 30);
+      const e = spawnUnit(kind, x, y);
+      if (kind === 'queen'){ e.laneX = CX; if (!G.queen || G.queen.dead) G.queen = e; }
+      if (kind === 'burrower') burst(x, y, '#8a6a48', 8, 90, .5, 4);
+    }
+    return count;
+  };
+  switch (cmd){
+    case 'money': G.money += +arg; toast(`资源 +${arg}`); break;
+    case 'inf': G.infMoney = !G.infMoney; toast(G.infMoney ? '无限资源：开' : '无限资源：关'); break;
+    case 'god': G.god = !G.god; toast(G.god ? '主角无敌：开' : '主角无敌：关'); break;
+    case 'speed': G.speed = arg; toast(`时间 ${arg} 倍速`); break;
+    case 'spawnH': if (spawnAt(CH.hk, +CH.hn, cheatPos(CH.hp), 30)) toast('友军已生成'); break;
+    case 'spawnB': if (spawnAt(CH.bk, CH.bk === 'queen' ? 1 : +CH.bn, cheatPos(CH.bp), 34)) toast('虫族已生成'); break;
+    case 'spawnN': {
+      const at = cheatPos(CH.np);
+      if (CH.nk === 'behemoth') spawnAt('behemoth', 1, at, 0); else spawnAt('burrower', 8, at, 40);
+      sfx('roarB', at.x, at.y); toast('野怪出现了'); break;
+    }
+    case 'queen':
+      if (G.queen && !G.queen.dead){ toast('虫后已经在场上'); break; }
+      G.queenDone = true; spawnAt('queen', 1, {x:CX, y:292}, 0); toast('虫后出巢了！'); G.shake = .45; sfx('roar'); break;
+    case 'btowers': for (const e of G.structs) if (e.kind === 'btower' && !e.dead) kill(e); break;
+    case 'repair': for (const e of G.structs) if (e.team === 0 && !e.dead) e.hp = e.maxhp; toast('己方建筑已修满'); break;
+    case 'clear': G.noBounty = true; for (const e of G.ents) if (e.team === 1 && !e.structure && !e.dead) kill(e); G.noBounty = false; toast('虫族单位已清除'); break;
+    case 'win': if (G.nest && !G.nest.dead){ G.nest.invuln = false; kill(G.nest); } break;
+  }
+  const tg = cheatEl.querySelectorAll('.tgl');
+  tg.forEach(b => b.classList.toggle('on', b.dataset.c === 'inf' ? G.infMoney : G.god));
+  refreshShop(true);
 }
 
 /* ---------- spatial grid (units only; structures live in G.structs) ---------- */
@@ -1599,6 +1963,7 @@ let neE = null, neRange = 0, neBest = null, neBd = 0;
 function neTest(t){
   const e = neE;
   if (t.team === e.team || t.dead || t.invuln || t.team == null) return;
+  if (t.air && !e.aa) return;                // only the player, rocketeers and turrets can hit fliers
   if (!t.hw && !e.hw){   // cheap box reject before the square root
     const lim = neRange + t.r, dx = t.x - e.x, dy = t.y - e.y;
     if (dx > lim || dx < -lim || dy > lim || dy < -lim) return;
@@ -1615,7 +1980,7 @@ function nearestEnemy(e, range, structOnly){
 }
 function bullet(x, y, a, spd, dmg, team, kind){
   G.bullets.push({x, y, vx:Math.cos(a) * spd, vy:Math.sin(a) * spd, dmg, team, kind,
-    r: kind === 'acid' ? 5 : 2.5, life: kind === 'acid' ? 3.6 : 1.1});
+    r: kind === 'acid' ? 5 : kind === 'rocket' ? 4 : 2.5, life: kind === 'acid' ? 3.6 : kind === 'rocket' ? .9 : 1.1});
 }
 function shoot(e, a, spd, dmg, kind, spread){
   a += rnd(-spread, spread);
@@ -1634,8 +1999,10 @@ function burst(x, y, col, n, sp, life, size){
     G.parts.push({x, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v, life:life * rnd(.6, 1), max:life, col, size:size * rnd(.6, 1.2)});
   }
 }
-function damage(t, amt){
+function damage(t, amt, by){
   if (t.dead || t.invuln || t.inv > 0) return;
+  if (t.kind === 'player' && G.god) return;
+  if (by != null){ t.lastBy = by; if (G.buff[by] > 0) amt *= 1.2; }
   t.hp -= amt; t.flash = .07;
   if (t.kind === 'player'){ t.hurtT = 0; G.shake = Math.max(G.shake, .22); sfx('hurt'); }
   if (t.kind === 'tower') tip('repair', touchMode ? '炮塔受损了，靠近它按住维修键' : '炮塔受损了，靠近它按住 E 维修');
@@ -1646,8 +2013,21 @@ function kill(e){
   if (e.dead) return;
   e.dead = true; e.hp = 0;
   if (!e.structure){ addCorpse(e); if (e.team === 1) sfx('bugdie', e.x, e.y); }
-  if (e.team === 1){ G.money += e.bounty || 0; if (!e.structure) G.kills++; }
-  if (e.kind === 'beetle'){ splat(e.x, e.y, 'rgba(96,58,26,', 14); burst(e.x, e.y, '#7a4b22', 10, 90, .5, 3); }
+  if (e.bomber && !e.exploded) bombBoom(e);
+  if (e.team === 1 && !G.noBounty){ G.money += e.bounty || 0; if (!e.structure) G.kills++; }
+  if (e.team === 2 && e.lastBy === 0){ G.money += e.bounty || 0; G.kills++; }
+  if (e.kind === 'behemoth' && e.lastBy != null){
+    G.buff[e.lastBy] = 45;
+    toast(e.lastBy === 0 ? '拿到巨兽之血：全军伤害 +20%、移速 +10%，持续 45 秒' : '虫族拿到了巨兽之血，45 秒内更强');
+  }
+  if (e.kind === 'barracks') toast(`${e.rax.name}被摧毁，走进它前面的框可以花 400 重建`);
+  if (e.kind === 'hatchery'){
+    const left = G.hatch.filter(h => !h.dead).length;
+    toast(left ? '摧毁一座孵化池，这一侧不再出虫' : '两座孵化池全毁，虫巢自己出虫，速度减半');
+  }
+  if (e.kind === 'beetle' || e.kind === 'lancer' || e.kind === 'burrower'){ splat(e.x, e.y, 'rgba(96,58,26,', 14); burst(e.x, e.y, '#7a4b22', 10, 90, .5, 3); }
+  if (e.kind === 'flyer' || e.kind === 'mortar'){ splat(e.x, e.y, 'rgba(120,200,60,', 14); burst(e.x, e.y, '#9dff5c', 10, 100, .5, 3); }
+  if (e.kind === 'behemoth'){ splat(e.x, e.y, 'rgba(70,40,30,', 34); burst(e.x, e.y, '#5b3a2a', 26, 150, .8, 5); G.shake = .4; }
   if (e.kind === 'spitter'){ splat(e.x, e.y, 'rgba(120,200,60,', 16); burst(e.x, e.y, '#9dff5c', 14, 110, .55, 3); }
   if (e.kind === 'brute'){ splat(e.x, e.y, 'rgba(70,40,30,', 22); burst(e.x, e.y, '#5b3a2a', 18, 120, .7, 4); }
   if (e.kind === 'queen'){
@@ -1655,7 +2035,7 @@ function kill(e){
     burst(e.x, e.y, '#9dff5c', 40, 220, 1, 5); burst(e.x, e.y, '#c06cb0', 30, 180, 1, 5);
     G.shake = .7; G.queen = null; toast('虫后已被击杀！');
   }
-  if (e.kind === 'marine' || e.kind === 'player'){ splat(e.x, e.y, 'rgba(120,28,22,', 9); burst(e.x, e.y, '#c94a3a', 8, 70, .4, 2.5); }
+  if (e.team === 0 && !e.structure){ splat(e.x, e.y, 'rgba(120,28,22,', 9); burst(e.x, e.y, '#c94a3a', 8, 70, .4, 2.5); }
   if (e.structure){
     scorch(e.x, e.y, e.r * 1.8); flashLight(e.x, e.y, 3);
     burst(e.x, e.y, '#ffb648', 40, 220, .9, 5); burst(e.x, e.y, '#4b3a2c', 30, 140, 1.2, 6);
@@ -1679,9 +2059,10 @@ function endGame(win){
 /* ---------- updates ---------- */
 function tutorialCheck(){
   const p = G.player;
+  if (G.t > 14) tip('rax', touchMode ? '基地两侧的兵营前有黄色方框，走进去可以换兵种、升级兵营' : '基地两侧的兵营前有黄色方框，走进去可以换兵种、升级兵营（按 1–5 / U / T）');
   if (!G.tips.has('dodge') && G.ents.some(e => e.kind === 'spitter' && e.y > G.camY && e.y < G.camY + H && e.x > G.camX && e.x < G.camX + W))
     tip('dodge', touchMode ? '绿色酸液弹可以躲，点翻滚时子弹会穿过你' : '绿色酸液弹可以躲，按空格翻滚时子弹会穿过你');
-  if (G.money >= 60) tip('upgrade', touchMode ? '资源够了，点底部按钮升级' : '资源够了，按 1–4 或点底部按钮升级');
+  if (G.money >= 60) tip('upgrade', touchMode ? '资源够了，点底部按钮升级' : '资源够了，按 1–3 或点底部按钮升级');
   if (p){
     if (!G.tips.has('shield') && G.ents.some(e => e.kind === 'btower' && Math.hypot(e.x - p.x, e.y - p.y) < 320))
       tip('shield', '三座虫族防御塔全拆掉，虫巢的护盾才会消失');
@@ -1706,12 +2087,14 @@ function updPlayer(p, dt){
   const l = Math.hypot(mx, my); if (l > 1){ mx /= l; my /= l; }
   p.moving = l > 0.05; p.mvx = mx; p.mvy = my;
   p.dashCd -= dt; p.nadeCd -= dt; p.inv -= dt;
+  if (p.slowT > 0) p.slowT -= dt;
+  const pk = (p.slowT > 0 ? .7 : 1) * (G.buff[0] > 0 ? 1.1 : 1);
   if (p.dashT > 0){
     p.dashT -= dt;
     p.x += p.dashVx * 560 * dt; p.y += p.dashVy * 560 * dt;
     G.parts.push({x:p.x, y:p.y, vx:0, vy:0, life:.18, max:.18, col:'rgba(230,166,62,.45)', size:15});
   } else {
-    p.x += mx * p.spd * dt; p.y += my * p.spd * dt;
+    p.x += mx * p.spd * pk * dt; p.y += my * p.spd * pk * dt;
   }
   p.x = clamp(p.x, 24, WW - 24); p.y = clamp(p.y, 40, WH - 30);
   if (G.base && !G.base.dead && gapTo(G.base, p.x, p.y) < 80) p.hp = Math.min(p.maxhp, p.hp + 20 * dt);
@@ -1752,80 +2135,243 @@ function updPlayer(p, dt){
       }
     } else if (!p.noMoneyT || G.t - p.noMoneyT > 3){ p.noMoneyT = G.t; toast('资源不足，无法维修'); }
   }
+  // barracks pads (100 x 100 in front of each barracks)
+  let pad = -1;
+  for (const r of G.rax) if (Math.abs(p.x - r.padX) < 50 && Math.abs(p.y - r.padY) < 50) pad = r.i;
+  if (pad !== G.raxPad){ G.raxPad = pad; refreshRax(); if (pad >= 0) tip('rax2', '这里是兵营面板：按 1–5 选兵种，U 升级兵营，T 部队训练'); }
 }
 
 function updUnit(e, dt){
   e.anim += dt; e.cdT -= dt; if (e.flash > 0) e.flash -= dt; if (e.bite > 0) e.bite -= dt;
-  let mx = 0, my = 0;
-  // keep the current target for a few frames; rescan on a short staggered timer or when it is gone / out of reach
-  e.tT = (e.tT || 0) - dt;
-  let t = e.tgt;
-  if (t && !t.dead && !t.invuln && e.tT > 0){
-    // only lock on while actually attacking it; while still closing in, look again every frame
-    if (pairGap(e, t) - e.r > (e.melee ? 4 : e.range * .95)) t = null;
-  } else t = null;
-  if (!t){
-    t = e.siege ? (nearestEnemy(e, 700, true) || nearestEnemy(e, 34)) : nearestEnemy(e, e.aggro);
-    e.tgt = t; e.tT = .12 + (e.id % 5) * .02;
+  if (e.slowT > 0) e.slowT -= dt;
+  let mx = 0, my = 0, t = null;
+  const spdK = (e.slowT > 0 ? .7 : 1) * (G.buff[e.team] > 0 ? 1.1 : 1);
+  if (e.fuse != null){                         // bomber: swelling, about to blow
+    e.fuse -= dt; e.flash = Math.floor(e.fuse * 12) % 2 ? .05 : 0; e.moving = false;
+    if (e.fuse <= 0) bombBoom(e);
+    return;
   }
-  if (e.spiral > 0){
-    e.spiral -= dt; e.spT -= dt;
-    if (e.spT <= 0){
-      e.spT = .07; e.spA += .33;
-      for (let k = 0; k < 3; k++) bullet(e.x, e.y, e.spA + k * TAU / 3, 135, e.dmg, 1, 'acid');
+  if (e.wind > 0){                             // lancer: scythes raised
+    e.wind -= dt; e.moving = false;
+    if (e.wind <= 0) lancerSweep(e);
+    return;
+  }
+  if (e.team === 2 && neutralLeash(e, dt)) return;
+  if (e.medic) [mx, my] = medicMove(e);
+  else {
+    // keep the current target for a few frames; rescan on a short staggered timer or when it is gone / out of reach
+    e.tT = (e.tT || 0) - dt;
+    t = e.tgt;
+    if (t && !t.dead && !t.invuln && e.tT > 0){
+      // only lock on while actually attacking it; while still closing in, look again every frame
+      if (pairGap(e, t) - e.r > (e.melee ? 4 : e.range * .95)) t = null;
+    } else t = null;
+    if (!t){
+      t = e.siege ? (nearestEnemy(e, 700, true) || nearestEnemy(e, 34)) : nearestEnemy(e, e.aggro);
+      e.tgt = t; e.tT = .12 + (e.id % 5) * .02;
     }
-  }
-  if (e.volley > 0){
-    e.volT -= dt;
-    if (e.volT <= 0){
-      const a = t ? Math.atan2(t.y - e.y, t.x - e.x) : e.ang;
-      e.ang = a;
-      fan(e.x + Math.cos(a) * 12, e.y + Math.sin(a) * 12, a, 5, .8, 150, e.dmg);
-      e.volley--; e.volT = .17;
-    }
-  }
-  if (t){
-    const np = nearPt(t, e.x, e.y), dx = np.x - e.x, dy = np.y - e.y, d = Math.hypot(dx, dy) || 1, gap = pairGap(e, t) - e.r;
-    if (e.melee){
-      e.ang = Math.atan2(dy, dx);
-      if (gap > 2){ mx = dx / d; my = dy / d; }
-      else if (e.cdT <= 0){ damage(t, e.dmg); e.cdT = e.cd; e.bite = .15; e.atk = G.t; sfx('bite', e.x, e.y); }
-    } else {
-      if (e.volley <= 0) e.ang = Math.atan2(dy, dx);
-      if (gap > e.range * .9){ mx = dx / d; my = dy / d; }
-      else if (e.cdT <= 0){
-        if (e.kind === 'marine'){ shoot(e, e.ang, 480, e.dmg * e.mult, 'slug', .06); e.cdT = e.cd * rnd(.85, 1.15); e.atk = G.t; sfx('mshot', e.x, e.y); }
-        else if (e.kind === 'queen') queenAttack(e, t);
-        else { e.volley = 3; e.volT = 0; e.cdT = e.cd * rnd(.9, 1.1); e.atk = G.t; sfx('acid', e.x, e.y); }
+    if (e.quake){ e.qT = (e.qT == null ? 3 : e.qT) - dt; if (e.qT <= 0 && t && pairGap(e, t) < 90){ e.qT = 6; quake(e); } }
+    if (e.spiral > 0){
+      e.spiral -= dt; e.spT -= dt;
+      if (e.spT <= 0){
+        e.spT = .07; e.spA += .33;
+        for (let k = 0; k < 3; k++) bullet(e.x, e.y, e.spA + k * TAU / 3, 135, e.dmg, 1, 'acid');
       }
     }
-  } else {
-    // no enemy in sight: march down own lane toward the next attackable objective
-    const g = defendTarget(e) || goalFor(e);
-    if (g && !g.structure){                                        // fall back to defend a building under attack
-      mx = g.x - e.x; my = g.y - e.y;
-      const l = Math.hypot(mx, my) || 1; mx /= l; my /= l;
-    } else if (g){
-      const dy = g.y - e.y;
-      if (Math.abs(dy) > 420){ mx = clamp((e.laneX - e.x) / 80, -.75, .75); my = Math.sign(dy); }   // merge into own lane, march
-      else { mx = g.x - e.x; my = dy; }                                                            // close in on the objective
-      const l = Math.hypot(mx, my) || 1; mx /= l; my /= l;
-      const da = Math.atan2(Math.sin(Math.atan2(my, mx) - e.ang), Math.cos(Math.atan2(my, mx) - e.ang));
-      e.ang += clamp(da, -4 * dt, 4 * dt);                         // smooth turning, no snapping
-      mx = Math.cos(e.ang); my = Math.sin(e.ang);
+    if (e.volley > 0){
+      e.volT -= dt;
+      if (e.volT <= 0){
+        const a = t ? Math.atan2(t.y - e.y, t.x - e.x) : e.ang;
+        e.ang = a;
+        fan(e.x + Math.cos(a) * 12, e.y + Math.sin(a) * 12, a, 5, .8, 150, e.dmg);
+        e.volley--; e.volT = .17;
+      }
+    }
+    if (t){
+      const np = nearPt(t, e.x, e.y), dx = np.x - e.x, dy = np.y - e.y, d = Math.hypot(dx, dy) || 1, gap = pairGap(e, t) - e.r;
+      if (e.melee){
+        e.ang = Math.atan2(dy, dx);
+        if (gap > 2){ mx = dx / d; my = dy / d; }
+        else if (e.cdT <= 0){
+          if (e.bomber){ e.fuse = .6; e.atk = G.t; return; }
+          if (e.sweep){ e.wind = .4; e.atk = G.t; return; }
+          damage(t, e.dmg, e.team); e.cdT = e.cd; e.bite = .15; e.atk = G.t; sfx('bite', e.x, e.y);
+        }
+      } else {
+        if (e.volley <= 0) e.ang = Math.atan2(dy, dx);
+        if (gap > e.range * .9){ mx = dx / d; my = dy / d; }
+        else if (e.flame){ if (e.cdT <= 0){ e.cdT = e.cd; flameTick(e); } }
+        else if (e.cdT <= 0){
+          if (e.kind === 'marine'){ shoot(e, e.ang, 480, e.dmg * e.mult, 'slug', .06); e.cdT = e.cd * rnd(.85, 1.15); e.atk = G.t; sfx('mshot', e.x, e.y); }
+          else if (e.rocket){ shoot(e, e.ang, 330, e.dmg * e.mult, 'rocket', .03); e.cdT = e.cd * rnd(.9, 1.1); e.atk = G.t; sfx('rocket', e.x, e.y); }
+          else if (e.twin){ twinShot(e); e.cdT = e.cd; e.atk = G.t; sfx('mshot', e.x, e.y); }
+          else if (e.lob){ lob(e, t); e.cdT = e.cd * rnd(.9, 1.1); e.atk = G.t; }
+          else if (e.kind === 'queen') queenAttack(e, t);
+          else { e.volley = 3; e.volT = 0; e.cdT = e.cd * rnd(.9, 1.1); e.atk = G.t; sfx('acid', e.x, e.y); }
+        }
+      }
+    } else if (e.team === 2){
+      const dx = e.hx - e.x, dy = e.hy - e.y, d = Math.hypot(dx, dy);
+      if (d > 40){ mx = dx / d; my = dy / d; }
+    } else {
+      // no enemy in sight: march down own lane toward the next attackable objective
+      const g = defendTarget(e) || goalFor(e);
+      if (g && !g.structure){                                        // fall back to defend a building under attack
+        mx = g.x - e.x; my = g.y - e.y;
+        const l = Math.hypot(mx, my) || 1; mx /= l; my /= l;
+      } else if (g){
+        const dy = g.y - e.y;
+        if (Math.abs(dy) > 420 && !e.air){ mx = clamp((e.laneX - e.x) / 80, -.75, .75); my = Math.sign(dy); }   // merge into own lane, march
+        else { mx = g.x - e.x; my = dy; }                                                                      // close in on the objective
+        const l = Math.hypot(mx, my) || 1; mx /= l; my /= l;
+        const da = Math.atan2(Math.sin(Math.atan2(my, mx) - e.ang), Math.cos(Math.atan2(my, mx) - e.ang));
+        e.ang += clamp(da, -4 * dt, 4 * dt);                         // smooth turning, no snapping
+        mx = Math.cos(e.ang); my = Math.sin(e.ang);
+      }
     }
   }
   if (mx || my) [mx, my] = steer(e, mx, my, dt, t);
   // stuck check: compare with where we were last frame (after separation pushes)
   if (e.lx != null && e.moving){
-    const moved = Math.hypot(e.x - e.lx, e.y - e.ly), want = e.spd * (e.ldt || dt);
+    const moved = Math.hypot(e.x - e.lx, e.y - e.ly), want = e.spd * (e.ldt || dt) * spdK;
     e.stuckT = moved < want * .3 ? (e.stuckT || 0) + dt : Math.max(0, (e.stuckT || 0) - dt * 2);
     if (e.stuckT > 1.1){ e.stuckT = 0; e.sideT = .7; e.sideDir = R() < .5 ? -1 : 1; }
   }
   e.lx = e.x; e.ly = e.y; e.ldt = dt;
   e.moving = !!(mx || my);
-  if (e.moving && !t) e.ang = Math.atan2(my, mx);
-  e.x += mx * e.spd * dt; e.y += my * e.spd * dt;
+  if (e.moving && !t && !e.medic) e.ang = Math.atan2(my, mx);
+  e.x += mx * e.spd * spdK * dt; e.y += my * e.spd * spdK * dt;
+}
+
+/* ---------- special attacks ---------- */
+const enemyOf = (e, u) => u.team !== e.team && !u.dead && !u.invuln && u.team != null;
+// medic: stay a little behind the most hurt (else nearest) friend, heal everyone close by
+function medicMove(e){
+  let best = null, bd = 420, hurt = null, hd = 1e9;
+  gridQuery(e.x, e.y, 420, u => {
+    if (u === e || u.dead || u.team !== e.team || u.medic) return;
+    const d = Math.hypot(u.x - e.x, u.y - e.y);
+    if (d < bd){ bd = d; best = u; }
+    if (u.hp < u.maxhp && d < 420 && d < hd){ hd = d; hurt = u; }
+  });
+  if (e.cdT <= 0){
+    e.cdT = e.cd; let any = false;
+    gridQuery(e.x, e.y, 125, u => {
+      if (u.team !== e.team || u.dead || u === e || u.hp >= u.maxhp || Math.hypot(u.x - e.x, u.y - e.y) > 120) return;
+      u.hp = Math.min(u.maxhp, u.hp + 6 * e.mult); any = true;
+      G.parts.push({x:u.x + rnd(-6, 6), y:u.y + rnd(-6, 6), vx:0, vy:-30, life:.5, max:.5, col:'#7dff9a', size:3});
+    });
+    if (any) e.atk = G.t;
+  }
+  const f = hurt || best;
+  if (f){
+    const tx = f.x, ty = f.y + (e.team === 0 ? 38 : -38), dx = tx - e.x, dy = ty - e.y, d = Math.hypot(dx, dy);
+    e.ang = Math.atan2(f.y - e.y, f.x - e.x);
+    return d > 22 ? [dx / d, dy / d] : [0, 0];
+  }
+  const dx = e.laneX - e.x, dy = 2650 - e.y, d = Math.hypot(dx, dy);
+  return d > 30 ? [dx / d, dy / d] : [0, 0];
+}
+// flamer: 0.1 s ticks of damage in a narrow cone, no anti-air
+function flameTick(e){
+  const ca = Math.cos(e.ang), sa = Math.sin(e.ang), reach = e.range + 8, dmg = e.dmg * e.mult;
+  const hit = u => {
+    if (!enemyOf(e, u) || u.air) return;
+    const np = nearPt(u, e.x, e.y), dx = np.x - e.x, dy = np.y - e.y, d = Math.hypot(dx, dy) || 1;
+    if (d - (u.hw ? 0 : u.r) <= reach && (dx * ca + dy * sa) / d > .85) damage(u, dmg, e.team);
+  };
+  for (const st of G.structs) hit(st);
+  gridQuery(e.x, e.y, reach + 30, hit);
+  for (let k = 0; k < 3; k++) G.parts.push({x:e.x + ca * 14, y:e.y + sa * 14, vx:ca * 230 + rnd(-45, 45), vy:sa * 230 + rnd(-45, 45),
+    life:.32, max:.32, col:R() < .5 ? '#ffb648' : '#ff6a2a', size:4.5});
+  sfx('flame', e.x, e.y);
+}
+function twinShot(e){
+  const ca = Math.cos(e.ang), sa = Math.sin(e.ang);
+  for (const k of [-1, 1]) bullet(e.x + ca * (e.r + 4) - sa * 7 * k, e.y + sa * (e.r + 4) + ca * 7 * k, e.ang + rnd(-.04, .04), 520, e.dmg * e.mult, e.team, 'slug');
+}
+// rocket: splash on impact or at the end of its flight; buildings and brutes take 1.5x
+function rocketBoom(b){
+  const hit = u => { if (u.team !== b.team && !u.dead && u.team != null && gapTo(u, b.x, b.y) < 40) damage(u, b.dmg * (u.structure || u.kind === 'brute' ? 1.5 : 1), b.team); };
+  for (const st of G.structs) hit(st);
+  gridQuery(b.x, b.y, 70, hit);
+  burst(b.x, b.y, '#ffb648', 14, 170, .4, 3.5); burst(b.x, b.y, '#5a4636', 8, 110, .6, 4);
+  scorch(b.x, b.y, 22); flashLight(b.x, b.y, 1.2); sfx('nade', b.x, b.y);
+}
+// mortar: a lobbed acid ball; landing point is marked while it flies
+function lob(e, t){
+  const x1 = t.x + rnd(-12, 12), y1 = t.y + rnd(-12, 12), d = Math.hypot(x1 - e.x, y1 - e.y);
+  G.lobs.push({x0:e.x, y0:e.y, x1, y1, t:0, dur:.9 + d / 700, team:e.team, dmg:e.dmg});
+  sfx('acid', e.x, e.y);
+}
+function lobLand(l){
+  const hit = u => { if (u.team !== l.team && !u.dead && u.team != null && gapTo(u, l.x1, l.y1) < 26) damage(u, l.dmg, l.team); };
+  for (const st of G.structs) hit(st);
+  gridQuery(l.x1, l.y1, 60, hit);
+  for (let k = 0; k < 8; k++) bullet(l.x1, l.y1, k / 8 * TAU + rnd(-.1, .1), 160, 5, l.team, 'acid');
+  G.pools.push({x:l.x1, y:l.y1, t:3.5, max:3.5, team:l.team});
+  splat(l.x1, l.y1, 'rgba(120,200,60,', 20); burst(l.x1, l.y1, '#9dff5c', 16, 140, .5, 3.5);
+  sfx('acidhit', l.x1, l.y1);
+}
+function updHazards(dt){
+  for (const l of G.lobs){ l.t += dt; if (l.t >= l.dur){ l.dead = true; lobLand(l); } }
+  compact(G.lobs, l => !l.dead);
+  for (const p of G.pools){
+    p.t -= dt;
+    const r = 40 * (.55 + .45 * p.t / p.max);
+    gridQuery(p.x, p.y, r + 20, u => {
+      if (u.team === p.team || u.dead || u.air || u.team == null || Math.hypot(u.x - p.x, u.y - p.y) > r + u.r * .5) return;
+      if (u.kind === 'player' && (G.god || u.inv > 0)) return;
+      u.slowT = .25; u.hp -= 10 * dt;
+      if (u.hp <= 0){ u.lastBy = p.team; kill(u); }
+    });
+  }
+  compact(G.pools, p => p.t > 0);
+  for (let k = 0; k < 3; k++) if (G.buff[k] > 0) G.buff[k] = Math.max(0, G.buff[k] - dt);
+}
+// bomber: blows up on contact or when killed; hurts everything nearby, bugs included
+function bombBoom(e){
+  if (e.exploded) return;
+  e.exploded = true; e.fuse = null;
+  const hit = u => { if (u !== e && !u.dead && !u.air && u.team != null && !(u.structure && u.team === e.team) && gapTo(u, e.x, e.y) < 60) damage(u, e.dmg * (u.structure ? 1.5 : 1), e.team); };
+  for (const st of G.structs) hit(st);
+  gridQuery(e.x, e.y, 90, hit);
+  burst(e.x, e.y, '#ffb648', 22, 210, .5, 4); burst(e.x, e.y, '#9dff5c', 16, 160, .6, 3.5);
+  scorch(e.x, e.y, 34); flashLight(e.x, e.y, 1.8); sfx('nade', e.x, e.y);
+  if (!e.dead) kill(e);
+}
+// lancer: front 130-degree sweep after the wind-up
+function lancerSweep(e){
+  e.cdT = e.cd; e.bite = .15;
+  const ca = Math.cos(e.ang), sa = Math.sin(e.ang), reach = e.r + 38;
+  const hit = u => {
+    if (!enemyOf(e, u) || u.air) return;
+    const np = nearPt(u, e.x, e.y), dx = np.x - e.x, dy = np.y - e.y, d = Math.hypot(dx, dy) || 1;
+    if (d - (u.hw ? 0 : u.r) <= reach && (dx * ca + dy * sa) / d > .42) damage(u, e.dmg, e.team);
+  };
+  for (const st of G.structs) hit(st);
+  gridQuery(e.x, e.y, reach + 30, hit);
+  for (let k = -3; k <= 3; k++){ const a = e.ang + k * .22; G.parts.push({x:e.x + Math.cos(a) * reach, y:e.y + Math.sin(a) * reach, vx:0, vy:0, life:.18, max:.18, col:'#e8f0d8', size:3}); }
+  sfx('bite', e.x, e.y);
+}
+// behemoth: ground slam every 6 s
+function quake(e){
+  const hit = u => { if (enemyOf(e, u) && !u.air && gapTo(u, e.x, e.y) < 90) damage(u, 25, e.team); };
+  for (const st of G.structs) hit(st);
+  gridQuery(e.x, e.y, 120, hit);
+  for (let k = 0; k < 24; k++){ const a = k / 24 * TAU; G.parts.push({x:e.x + Math.cos(a) * 20, y:e.y + Math.sin(a) * 20, vx:Math.cos(a) * 220, vy:Math.sin(a) * 220, life:.4, max:.4, col:'#8a6a48', size:5}); }
+  scorch(e.x, e.y, 60); G.shake = Math.max(G.shake, .25); e.atk = G.t; sfx('roarB', e.x, e.y);
+}
+// neutral monsters stay near their camp: dragged more than 260 away they walk home and heal 5%/s
+function neutralLeash(e, dt){
+  const dx = e.hx - e.x, dy = e.hy - e.y, d = Math.hypot(dx, dy);
+  if (d > 260) e.homing = true;
+  if (!e.homing) return false;
+  if (d < 50){ e.homing = false; return false; }
+  e.hp = Math.min(e.maxhp, e.hp + e.maxhp * .05 * dt);
+  e.ang = Math.atan2(dy, dx); e.moving = true; e.tgt = null;
+  e.x += dx / d * e.spd * 1.3 * dt; e.y += dy / d * e.spd * 1.3 * dt;
+  return true;
 }
 
 /* ---------- unit navigation ---------- */
@@ -1836,7 +2382,7 @@ function goalFor(e){
   let best = null, bs = 1e9;
   for (const s of G.structs){
     if (s.dead || s.invuln || s.team === e.team) continue;
-    const sc = Math.hypot(s.x - e.x, s.y - e.y) + Math.abs(s.x - e.laneX) * .8;
+    const sc = Math.hypot(s.x - e.x, s.y - e.y) + (e.air ? 0 : Math.abs(s.x - e.laneX) * .8);
     if (sc < bs){ bs = sc; best = s; }
   }
   return best;
@@ -1868,7 +2414,7 @@ function defendTarget(e){
 function steer(e, mx, my, dt, tgt){
   let ax = 0, ay = 0;
   for (const s of G.structs){
-    if (s.dead || s === tgt) continue;
+    if (s.dead || s === tgt || e.air) continue;
     const sr = s.hw ? Math.max(s.hw, s.hh) : s.r, rx = s.x - e.x, ry = s.y - e.y, look = sr + 110;
     const along = rx * mx + ry * my;
     if (along <= 0 || along > look) continue;
@@ -1907,14 +2453,14 @@ function updStruct(e, dt){
     }
     return;
   }
-  if (e.kind === 'base') return;
+  if (e.kind === 'base' || e.kind === 'barracks' || e.kind === 'hatchery') return;
   const t = nearestEnemy(e, e.range);
   if (!t) return;
   const a = Math.atan2(t.y - e.y, t.x - e.x);
   let da = a - e.ang; da = Math.atan2(Math.sin(da), Math.cos(da));
   e.ang += da * Math.min(1, dt * 9);
   if (e.cdT > 0) return;
-  if (e.kind === 'tower'){ shoot(e, e.ang, 540, e.dmg, 'slug', .03); e.cdT = e.cd; sfx('turret', e.x, e.y); }
+  if (e.kind === 'tower'){ shoot(e, e.ang, 540, e.dmg, 'tslug', .03); e.cdT = e.cd; sfx('turret', e.x, e.y); }
   else {
     e.pat = (e.pat || 0) + 1;
     if (e.pat % 2) ring(e.x, e.y, 12, e.anim, 125, e.dmg);
@@ -1926,7 +2472,7 @@ function updStruct(e, dt){
 let sepA = null;
 const sepPair = b => {
   const a = sepA;
-  if (b.id <= a.id || b.dead) return;
+  if (b.id <= a.id || b.dead || !a.air !== !b.air) return;
   const rr = a.r + b.r, dx = b.x - a.x, dy = b.y - a.y;
   if (dx > rr || dx < -rr || dy > rr || dy < -rr) return;
   const d = Math.hypot(dx, dy) || .01;
@@ -1944,7 +2490,7 @@ function separate(){
   for (const s of G.structs){
     if (s.dead) continue;
     gridQuery(s.x, s.y, (s.hw || s.r) + 30, u => {
-      if (u.dead) return;
+      if (u.dead || u.air) return;
       if (s.hw){
         const dx = u.x - s.x, dy = u.y - s.y, ox = s.hw + u.r - Math.abs(dx), oy = s.hh + u.r - Math.abs(dy);
         if (ox > 0 && oy > 0){ if (ox < oy) u.x += (dx < 0 ? -1 : 1) * ox; else u.y += (dy < 0 ? -1 : 1) * oy; }
@@ -1958,9 +2504,11 @@ function separate(){
 }
 
 let bHit = null, bCur = null;
+const AA_SHOTS = {pslug:1, tslug:1, rocket:1};
 function bTest(e){
   const b = bCur;
   if (bHit || e.team === b.team || e.dead || e.inv > 0 || e.team == null) return;
+  if (e.air && !AA_SHOTS[b.kind]) return;
   if (e.hw){ if (Math.abs(e.x - b.x) < e.hw + b.r && Math.abs(e.y - b.y) < e.hh + b.r) bHit = e; return; }
   const hr = e.kind === 'player' ? e.r * .65 : e.r, dx = e.x - b.x, dy = e.y - b.y, rr = hr + b.r;
   if (dx * dx + dy * dy < rr * rr) bHit = e;
@@ -1969,16 +2517,21 @@ function updBullets(dt){
   for (const b of G.bullets){
     if (b.dead) continue;
     b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
-    if (b.life <= 0 || b.x < -10 || b.x > WW + 10 || b.y < -10 || b.y > WH + 10){ b.dead = true; continue; }
+    if (b.life <= 0 || b.x < -10 || b.x > WW + 10 || b.y < -10 || b.y > WH + 10){ b.dead = true; if (b.kind === 'rocket') rocketBoom(b); continue; }
+    if (b.kind === 'rocket' && R() < .5) G.parts.push({x:b.x, y:b.y, vx:rnd(-10, 10), vy:rnd(-10, 10), life:.35, max:.35, col:'rgba(150,140,130,.6)', size:3.5});
     bHit = null; bCur = b;
     for (const e of G.structs) if (!bHit) bTest(e);
     if (!bHit) gridQuery(b.x, b.y, 40, bTest);
     const e = bHit;
     if (e){
       b.dead = true;
-      if (e.invuln) burst(b.x, b.y, '#bfffa0', 3, 60, .25, 2);
+      if (b.kind === 'rocket') rocketBoom(b);
+      else if (e.invuln) burst(b.x, b.y, '#bfffa0', 3, 60, .25, 2);
       else {
-        damage(e, b.dmg);
+        let dmg = b.dmg;
+        // lancer: thick front plates, 30% less from shots that hit its face
+        if (e.kind === 'lancer'){ const sp = Math.hypot(b.vx, b.vy) || 1; if ((-b.vx * Math.cos(e.ang) - b.vy * Math.sin(e.ang)) / sp > .5) dmg *= .7; }
+        damage(e, dmg, b.team);
         if (e.kind === 'player' && b.kind === 'acid') sfx('acidhit');
         burst(b.x, b.y, b.kind === 'acid' ? '#9dff5c' : (e.team === 1 ? '#c9e86a' : '#ffd27a'), 3, 70, .2, 2);
       }
@@ -1991,32 +2544,17 @@ function update(dt){
   if (G.state === 'play' && !G.over){
     G.t += dt;
     G.money += dt * 2;
-    G.humanT -= dt;
-    if (G.humanT <= 0){
-      G.humanT = 8;
-      const n = G.diff.hCount + Math.floor(G.lv.troops / 2), m = 1 + .2 * G.lv.troops;
-      for (let i = 0; i < n; i++){
-        const u = make('marine', CX + rnd(-140, 140), 2974 + rnd(-8, 8));
-        u.maxhp = u.hp = 50 * m; u.mult = m; u.laneX = pickLane();
-      }
+    if (G.infMoney) G.money = Math.max(G.money, 99999);
+    for (const r of G.rax){
+      if (!r.ent || r.ent.dead) continue;
+      r.t -= dt;
+      if (r.t <= 0){ r.t = raxInterval(r); raxSpawn(r); }
     }
     G.bugT -= dt;
     if (G.bugT <= 0){
       G.bugT = G.diff.bugEvery;
-      const lvl = Math.floor(G.t / G.diff.grow);
-      const n = Math.min(15, 5 + lvl), sp = Math.max(1, Math.round(n * .4));
-      const cnt = G.ents.filter(e => e.team === 1 && !e.structure).length;
-      if (cnt < 100 && G.nest && !G.nest.dead){
-        for (let i = 0; i < n; i++){
-          const b = make(i < sp ? 'spitter' : 'beetle', CX + rnd(-160, 160), 264 + rnd(-6, 16));
-          b.maxhp = b.hp = b.hp * G.diff.bugHp * (1 + lvl * .06); b.laneX = pickLane();
-        }
-        if (G.diff.bruteFrom != null && lvl >= G.diff.bruteFrom && R() < .45 + lvl * .1){
-          const b = make('brute', CX + rnd(-100, 100), 272);
-          b.maxhp = b.hp = b.hp * G.diff.bugHp * (1 + lvl * .06); b.laneX = pickLane();
-          if (!G.bruteSeen){ G.bruteSeen = true; toast('重甲虫出现，它会直扑炮塔'); sfx('screech'); }
-        }
-      }
+      let cnt = 0; for (const e of G.ents) if (e.team === 1 && !e.structure) cnt++;
+      if (cnt < 100 && G.nest && !G.nest.dead) bugWave();
     }
     if (!G.queenDone && G.diff.queenAt != null && G.t >= G.diff.queenAt && G.nest && !G.nest.dead){
       G.queenDone = true;
@@ -2059,11 +2597,13 @@ function update(dt){
   }
   separate();
   for (const n of G.nades){ n.t += dt; if (n.t >= n.dur){ n.dead = true; explodeNade(n.x1, n.y1); } }
+  updHazards(dt);
   G.nades = G.nades.filter(n => !n.dead);
   updBullets(dt);
   for (const p of G.parts){ p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .93; p.vy *= .93; p.life -= dt; }
   compact(G.parts, p => p.life > 0);
   compact(G.ents, e => !e.dead); compact(G.structs, e => !e.dead);
+  if (!G.player && G.raxPad >= 0){ G.raxPad = -1; refreshRax(); }
   if (!G.player && !G.ship && G.state === 'play' && !G.over){
     G.respawnT -= dt;
     if (G.respawnT <= 0) callShip(false);
@@ -2144,11 +2684,11 @@ function drawHud(){
     if (e.kind === 'player') continue;
     if (e.structure){
       ctx.fillStyle = e.team ? (e.kind === 'nest' ? '#c06cb0' : '#9dff5c') : '#86b6ea';
-      const z = e.kind === 'nest' || e.kind === 'base' ? 5 : 3.5;
+      const z = e.kind === 'nest' || e.kind === 'base' ? 5 : e.kind === 'barracks' || e.kind === 'hatchery' ? 4.5 : 3.5;
       ctx.fillRect(MX(e.x) - z / 2, MY(e.y) - z / 2, z, z);
     } else {
-      ctx.fillStyle = e.team ? (e.kind === 'spitter' ? '#9dff5c' : e.kind === 'queen' ? '#ff6ad5' : '#c58a4a') : '#8fc6ff';
-      const z = e.kind === 'queen' ? 4 : e.kind === 'brute' ? 2.5 : 1.6;
+      ctx.fillStyle = e.team === 2 ? '#f0d070' : e.team ? (e.kind === 'spitter' || e.kind === 'mortar' ? '#9dff5c' : e.kind === 'queen' ? '#ff6ad5' : e.air ? '#ffe28a' : '#c58a4a') : '#8fc6ff';
+      const z = e.kind === 'queen' || e.kind === 'behemoth' ? 4 : e.kind === 'brute' || e.kind === 'mech' ? 2.5 : 1.6;
       ctx.fillRect(MX(e.x) - z / 2, MY(e.y) - z / 2, z, z);
     }
   }
@@ -2160,6 +2700,8 @@ function drawHud(){
     ctx.fillText(`${Math.round(1000 / Math.max(1, fpsAvg))} FPS · ${Math.round(renderer.getPixelRatio() * 100)}%`, (220 + W - 86) / 2, 20);
     ctx.textAlign = 'left';
   }
+  if (G.cheated){ ctx.textAlign = 'right'; ctx.font = CJK(700, 11); ctx.fillStyle = '#ffb648'; ctx.fillText('金手指', W - 16, 66); ctx.textAlign = 'left'; }
+  if (G.buff[0] > 0){ ctx.font = CJK(700, 11); ctx.fillStyle = '#f0d070'; ctx.fillText(`巨兽之血 ${Math.ceil(G.buff[0])} 秒`, 18, 120); }
   // boss
   let ty0 = 132;
   const q = G.queen;
@@ -2198,7 +2740,7 @@ function fmtTime(t){ const m = Math.floor(t / 60), s = Math.floor(t % 60); retur
 
 /* ---------- save, settings, audio ---------- */
 const SAVE_KEY = 'zongxian.save.v1';
-const SAVE = {version:1, levels:{}, settings:{shadows:true, shake:true, sound:true, music:true, quality:'', fps:false}, diff:'normal'};
+const SAVE = {version:1, levels:{}, settings:{shadows:true, shake:true, sound:true, music:true, quality:'', fps:false, cheats:false}, diff:'normal'};
 try {
   const raw = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
   if (raw && raw.version === 1){
@@ -2263,6 +2805,7 @@ function noise(dur, vol, freq){
 }
 // key -> [sample, volume, min gap ms, pitch jitter]
 const SFX = {
+  flame:['flamer_loop', .14, 380, .05], rocket:['rocket', .3, 120, .08], roarB:['behemoth_roar', .7, 800, .05],
   shot:['rifle', .32, 70, .06], mshot:['marine_shot', .13, 55, .1], turret:['turret', .2, 90, .06], acid:['acid_spit', .3, 110, .1],
   acidhit:['acid_hit', .45, 120, .05], boom:['explosion_big', .7, 60, .05], nade:['explosion_small', .6, 60, .08], throw:['grenade_throw', .45, 0, .05],
   bite:['bug_bite', .2, 80, .15], bugdie:['bug_die', .26, 45, .15], screech:['bug_screech', .6, 0, 0], roar:['queen_roar', .8, 0, 0],
@@ -2338,7 +2881,10 @@ const menu = document.getElementById('menu'), levelsEl = document.getElementById
 const pauseEl = document.getElementById('pause'), endEl = document.getElementById('end');
 const overlays = [menu, levelsEl, settingsEl, pauseEl, endEl];
 function showOnly(el){ overlays.forEach(o => o.classList.toggle('hidden', o !== el)); }
-function hudOn(on){ shopEl.classList.toggle('hidden', !on); skillsEl.classList.toggle('hidden', !on); }
+function hudOn(on){
+  shopEl.classList.toggle('hidden', !on); skillsEl.classList.toggle('hidden', !on);
+  if (!on){ raxEl.classList.add('hidden'); toggleCheat(false); }
+}
 const starStr = n => '★'.repeat(n) + '☆'.repeat(3 - n);
 const rec = i => SAVE.levels[String(i + 1)];
 const unlocked = i => i === 0 || !!(rec(i - 1) && rec(i - 1).stars > 0);
@@ -2389,14 +2935,17 @@ setTimeout(finishLoad, 25000);
 // light click feedback on menu buttons
 document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.btn, .lv, .seg button')) sfx('click'); });
 document.getElementById('levelsBack').addEventListener('click', () => showOnly(menu));
-const optFps = document.getElementById('optFps');
+const optFps = document.getElementById('optFps'), optCheats = document.getElementById('optCheats'), pauseCheat = document.getElementById('pauseCheat');
 optFps.addEventListener('change', () => { SET.fps = optFps.checked; persist(); });
+optCheats.addEventListener('change', () => { SET.cheats = optCheats.checked; persist(); pauseCheat.classList.toggle('hidden', !SET.cheats); if (!SET.cheats) toggleCheat(false); });
+pauseCheat.classList.toggle('hidden', !SET.cheats);
+pauseCheat.addEventListener('click', () => { setPause(false); toggleCheat(true); });
 const optShake = document.getElementById('optShake'), optSound = document.getElementById('optSound'), optMusic = document.getElementById('optMusic');
 const qBtns = [...document.querySelectorAll('#qSeg button')];
 const showQ = () => qBtns.forEach(b => { const on = b.dataset.q === SET.quality; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
 qBtns.forEach(b => b.addEventListener('click', () => { SET.quality = b.dataset.q; persist(); showQ(); applySettings(); }));
 document.getElementById('btnSettings').addEventListener('click', () => {
-  showQ(); optFps.checked = !!SET.fps; optShake.checked = !!SET.shake; optSound.checked = !!SET.sound; optMusic.checked = !!SET.music;
+  showQ(); optFps.checked = !!SET.fps; optCheats.checked = !!SET.cheats; optShake.checked = !!SET.shake; optSound.checked = !!SET.sound; optMusic.checked = !!SET.music;
   showOnly(settingsEl);
 });
 optMusic.addEventListener('change', () => { SET.music = optMusic.checked; persist(); if (SET.music) audio(); });
@@ -2429,7 +2978,7 @@ function showEnd(){
   const st = (c1 ? 1 : 0) + (c2 ? 1 : 0) + (c3 ? 1 : 0);
   const key = String(G.level + 1), old = SAVE.levels[key];
   let record = false;
-  if (G.win){
+  if (G.win && !G.cheated){
     record = !old || !old.bestTime || G.t < old.bestTime;
     SAVE.levels[key] = {stars: Math.max(st, old ? old.stars || 0 : 0), bestTime: Math.round((record ? G.t : old.bestTime) * 10) / 10};
     persist();
@@ -2437,9 +2986,9 @@ function showEnd(){
   document.getElementById('endCard').className = 'card ' + (G.win ? 'win' : 'lose');
   document.getElementById('endTitle').textContent = G.win ? '虫巢已摧毁' : '基地失守';
   document.getElementById('endSub').textContent = G.win
-    ? `${L.name}，${G.diff.label}难度通关${record ? '，刷新了最佳用时' : ''}。`
-    : '虫群冲进了基地。多升级援军、勤修炮塔再试一次。';
-  document.getElementById('endStars').textContent = G.win ? starStr(st) : '';
+    ? (G.cheated ? `${L.name}通关。本局使用了金手指，不计成绩。` : `${L.name}，${G.diff.label}难度通关${record ? '，刷新了最佳用时' : ''}。`)
+    : (G.cheated ? '基地失守。本局使用了金手指，不计成绩。' : '虫群冲进了基地。多升级兵营、勤修炮塔再试一次。');
+  document.getElementById('endStars').textContent = G.win && !G.cheated ? starStr(st) : '';
   const crit = document.getElementById('endCrit');
   crit.innerHTML = '';
   if (G.win){
@@ -2462,7 +3011,7 @@ let last = performance.now(), ftAvg = 16.7, fpsAvg = 16.7, resT = 0, goodT = 0;
 function frame(now){
   const raw = now - last, dt = Math.min(.05, raw / 1000); last = now;
   fpsAvg += (Math.min(raw, 1000) - fpsAvg) * .05;
-  if (G && !G.paused && !G.endShown) update(dt);
+  if (G && !G.paused && !G.endShown) for (let k = 0; k < (G.speed || 1); k++) update(dt);
   render(now);
   updMusic(dt); setRepairLoop(!!(G && G.beam && !G.paused));
   // dynamic resolution: drop render resolution while frames run long, creep back up when there is headroom
