@@ -11,15 +11,19 @@
 
 ## 运行
 
-高清素材要通过网址加载，所以要在仓库目录起一个本地静态服务器，再用 Chrome 或 Edge 打开：
+三种方式，画面和功能完全一样，都不需要联网（只有标题字体走 Google Fonts，连不上会自动换成系统字体）：
 
-```bash
-npx serve .            # 然后打开 http://localhost:3000/zongxian_demo.html
-# 或者
-python -m http.server  # 然后打开 http://localhost:8000/zongxian_demo.html
-```
+| 方式 | 怎么做 | 适合 |
+| --- | --- | --- |
+| 离线单文件版 | 双击 `dist/纵线突击_离线版.html` | 直接玩、发给别人玩 |
+| 启动脚本 | Windows 双击 `start.bat`；macOS 双击 `start.command`；Linux 运行 `sh start.command` | 改代码后马上看效果 |
+| 自己起服务器 | 在仓库目录运行 `node tools/serve.mjs`、`npx serve .` 或 `python -m http.server`，再打开 `zongxian_demo.html` | 同上 |
 
-需要联网（three.js 和字体从 CDN 加载）。直接双击打开 HTML 也能玩，但浏览器不允许本地文件读取素材，会退回到简单几何体和合成音效。
+启动脚本需要电脑上装了 Node.js 或 Python（装过 Claude Code 就有 Node.js）。直接双击 `zongxian_demo.html` 不行：浏览器不允许本地网页读取旁边的代码和素材文件，页面会提示你改用上面的方式。
+
+**拿到最新版**：在已经克隆的仓库目录里运行 `git pull`。
+
+**改了游戏之后**重新生成离线版：`node tools/build_offline.mjs`（需要联网下载一次打包工具 esbuild）。
 
 画质在「设置」里调：高、中、低。帧率不够时游戏会自动降低渲染分辨率；打开「显示帧率」可以看到当前帧率和分辨率。
 
@@ -40,6 +44,9 @@ python -m http.server  # 然后打开 http://localhost:8000/zongxian_demo.html
 
 ```
 zongxian_demo.html     当前 Demo（游戏代码都在这一个文件里）
+dist/纵线突击_离线版.html  离线单文件版：代码、three.js 和全部素材打包在一起，双击就能玩
+lib/three/             three.js r160（本地副本，不依赖 CDN）
+start.bat / start.command  一键启动本地服务器并打开游戏
 docs/设计文档.md        完整设计文档，所有需求和数值以它为准
 docs/设计文档.docx      同一份设计文档的 Word 版（由 .md 导出）
 docs/zongxian_map.png  战场布局缩略图
@@ -48,6 +55,8 @@ assets/                正式素材：模型、贴图、音效、音乐（来源
 assets/web/            游戏实际加载的素材包：模型贴图缩到 256/512 像素、地面贴图 1024 像素
 tools/assetgen/        生成自制模型、音效、音乐的脚本（Blender bpy + Python）
 tools/build_web_assets.sh  从 assets/ 重新生成 assets/web/
+tools/build_offline.mjs    生成离线单文件版
+tools/serve.mjs            本地静态服务器（启动脚本调用它）
 ```
 
 ## 用 Claude Code 继续开发

@@ -300,10 +300,21 @@ details[open] summary::before{content:'–'}
   </div>
 </div>
 
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script>
+// Opened by double-click (file://)? Browsers refuse to load the game modules that way. Explain instead of a blank screen.
+setTimeout(function(){
+  if (window.__GAME_OK || location.protocol !== 'file:') return;
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0d0a;color:#e9efe2;font:15px/1.7 "PingFang SC","Microsoft YaHei",sans-serif;padding:24px;z-index:99';
+  d.innerHTML = '<div style="max-width:420px"><h2 style="margin:0 0 10px">纵线突击需要从启动脚本打开</h2>直接双击这个 HTML 时，浏览器不允许它读取游戏代码和素材。<br><br>• Windows：双击仓库里的 <b>start.bat</b><br>• macOS：双击 <b>start.command</b><br>• 或者直接玩单文件的 <b>纵线突击_离线版.html</b>（在 dist 文件夹，可以双击）</div>';
+  document.body.appendChild(d);
+}, 1500);
+</script>
+<script type="importmap">{"imports":{"three":"./lib/three/three.module.min.js","three/addons/":"./lib/three/addons/"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+window.__GAME_OK = true;
 (() => {
 'use strict';
 const W = 480, WH = 3200, WW = 1440, CX = WW / 2;
@@ -846,12 +857,13 @@ const THEME_TEX = {sand:'sand', acid:'sand_warm', hive:'scorched'};
 const SFX_FILES = ['flamer_loop', 'rocket', 'behemoth_roar', 'rifle', 'marine_shot', 'turret', 'acid_spit', 'acid_hit', 'explosion_big', 'explosion_small', 'grenade_throw', 'bug_bite', 'bug_die',
   'bug_screech', 'queen_roar', 'player_hurt', 'player_die', 'dropship', 'repair_loop', 'ui_click', 'ui_buy', 'ui_denied', 'win', 'lose'];
 const GLB = {}, TEXS = {}, sfxRaw = {};
+const AURL = p => (window.__BUNDLE && window.__BUNDLE[p]) || p;
 const ASSETS = window.__ASSETS = {done:false, total:0, loaded:0, failed:[]};
 const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
 function loadTexSet(name){
   const tl = new THREE.TextureLoader(), base = ASSET + 'textures/' + name + '/';
-  const one = (f, srgb) => tl.loadAsync(base + f + '.jpg').then(t => {
+  const one = (f, srgb) => tl.loadAsync(AURL(base + f + '.jpg')).then(t => {
     t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = anisotropy;
     t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
     t.repeat.set(WW / 150, WH / 150); return t;
@@ -866,9 +878,9 @@ function loadAssets(onProgress){
   };
   const gl = new GLTFLoader();
   const jobs = [];
-  for (const k in MODEL_FILES) jobs.push(track(gl.loadAsync(ASSET + 'models/' + MODEL_FILES[k] + '.gltf').then(g => (GLB[k] = g)), k));
+  for (const k in MODEL_FILES) jobs.push(track(gl.loadAsync(AURL(ASSET + 'models/' + MODEL_FILES[k] + '.gltf')).then(g => (GLB[k] = g)), k));
   for (const t of TEX_CORE) jobs.push(track(loadTexSet(t), t));
-  for (const f of SFX_FILES) jobs.push(track(fetch(ASSET_RAW + 'sfx/' + f + '.ogg').then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(b => (sfxRaw[f] = b)), f));
+  for (const f of SFX_FILES) jobs.push(track(fetch(AURL(ASSET_RAW + 'sfx/' + f + '.ogg')).then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(b => (sfxRaw[f] = b)), f));
   return Promise.all(jobs).then(() => {
     TEX_LATE.forEach(t => loadTexSet(t).then(() => { if (G && groundPBR) setGroundTheme(G.theme); }).catch(() => {}));
   });
@@ -2857,7 +2869,7 @@ function setRepairLoop(on){
 let musicUnlocked = false;
 const MUSIC = {};
 for (const k of ['menu', 'battle', 'boss']){
-  const a = new Audio(); a.loop = true; a.preload = 'none'; a.volume = 0; a.src = ASSET_RAW + 'music/' + k + '.ogg';
+  const a = new Audio(); a.loop = true; a.preload = 'none'; a.volume = 0; a.src = AURL(ASSET_RAW + 'music/' + k + '.ogg');
   a.addEventListener('error', () => { a.dead = true; });
   MUSIC[k] = a;
 }
@@ -2927,6 +2939,11 @@ function finishLoad(){
   try { buildHD(); } catch (err){ console.warn('HD assets', err); }
   try { warmup(); } catch (err){ console.warn('warmup', err); }
   ASSETS.done = true; btnPlay.disabled = false; btnPlay.textContent = '开始作战';
+  if (location.protocol === 'file:' && !window.__BUNDLE && ASSETS.failed.length){
+    const n = document.createElement('p'); n.className = 'sub';
+    n.textContent = '直接双击打开时浏览器不让读取素材，现在是简化画面。想看高清版：双击仓库里的 start 启动脚本，或者玩离线版 纵线突击_离线版.html。';
+    btnPlay.parentNode.insertBefore(n, btnPlay);
+  }
   if (actx) decodeSfx();
 }
 updLoadUi();
