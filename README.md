@@ -41,6 +41,7 @@ python -m http.server  # 然后打开 http://localhost:8000/zongxian_demo.html
 ```
 zongxian_demo.html     当前 Demo（游戏代码都在这一个文件里）
 docs/设计文档.md        完整设计文档，所有需求和数值以它为准
+docs/设计文档.docx      同一份设计文档的 Word 版（由 .md 导出）
 docs/zongxian_map.png  战场布局缩略图
 docs/素材清单.md        正式版需要的模型、贴图、音效、音乐清单与规格
 assets/                正式素材：模型、贴图、音效、音乐（来源见 assets/CREDITS.md）
